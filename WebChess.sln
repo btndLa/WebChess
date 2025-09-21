@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36429.23
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebChess.WebApi", "WebChess.WebApi\WebChess.WebApi.csproj", "{9F5FF7F0-0B01-4BD8-92E5-790BFF715184}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebChess.DataAccess", "WebChess.DataAccess\WebChess.DataAccess.csproj", "{552BB53F-B15C-4382-9463-1E1C886F27C1}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "webchess.react", "WebChess.React\webchess.react.esproj", "{F970F506-5D0F-A668-D829-AA1EAA0117A5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9F5FF7F0-0B01-4BD8-92E5-790BFF715184}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F5FF7F0-0B01-4BD8-92E5-790BFF715184}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F5FF7F0-0B01-4BD8-92E5-790BFF715184}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F5FF7F0-0B01-4BD8-92E5-790BFF715184}.Release|Any CPU.Build.0 = Release|Any CPU
+		{552BB53F-B15C-4382-9463-1E1C886F27C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{552BB53F-B15C-4382-9463-1E1C886F27C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{552BB53F-B15C-4382-9463-1E1C886F27C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{552BB53F-B15C-4382-9463-1E1C886F27C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F970F506-5D0F-A668-D829-AA1EAA0117A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F970F506-5D0F-A668-D829-AA1EAA0117A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F970F506-5D0F-A668-D829-AA1EAA0117A5}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{F970F506-5D0F-A668-D829-AA1EAA0117A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F970F506-5D0F-A668-D829-AA1EAA0117A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F970F506-5D0F-A668-D829-AA1EAA0117A5}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6306A126-A181-40BE-BBCA-C91CF002108E}
+	EndGlobalSection
+EndGlobal
