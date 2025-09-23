@@ -4,7 +4,16 @@ using WebChess.WebApi.Models;
 
 namespace WebChess.WebApi.Controllers
 {
-    public class HomeController : Controller
+
+	[ApiController]
+	[Route("api/health")]
+	public class HealthController : ControllerBase {
+		[HttpGet]
+		public IActionResult Get() {
+			return Ok("OK");
+		}
+	}
+	public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
 
