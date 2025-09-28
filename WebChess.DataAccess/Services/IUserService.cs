@@ -1,10 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using WebChess.DataAccess.Models;
 
 namespace WebChess.DataAccess.Services {
-	internal interface IUserService {
+	public interface IUserService {
+		Task AddUserAsync(User user, string password);
+		Task<(string authToken, string refreshToken, string userId)> LoginAsync(string username, string password);
+		Task<(string authToken, string refreshToken, string userId)> RedeemRefreshTokenAsync(string refreshToken);
+		Task<User?> GetCurrentUserAsync();
+		string GetCurrentUserId();
+		Task LogoutAsync();
+		Task<User?> GetUserByIdAsync(string userId);
 	}
 }

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WebChess.DataAccess.Models;
+using WebChess.DataAccess.Services;
 
 namespace WebChess.DataAccess {
 	public static class DependencyInjection {
@@ -18,6 +19,7 @@ namespace WebChess.DataAccess {
 			{
 				// Password settings.
 				options.Password.RequiredLength = 6;
+				options.Password.RequireNonAlphanumeric = false;
 
 				// Lockout settings.
 				options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
@@ -27,6 +29,8 @@ namespace WebChess.DataAccess {
 			})
 			.AddEntityFrameworkStores<WebChessDbContext>()
 			.AddDefaultTokenProviders();
+
+			services.AddScoped<IUserService, UserService>();
 
 
 			return services;
