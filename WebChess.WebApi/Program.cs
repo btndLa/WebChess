@@ -1,4 +1,6 @@
 using Microsoft.OpenApi.Models;
+using WebChess.DataAccess;
+using WebChess.WebApi.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,9 @@ builder.Services.AddSwaggerGen(c => {
 		Description = "API for WebChess"
 	});
 });
+builder.Services.AddAutoMapper();
+
+builder.Services.AddDataAccess(builder.Configuration);
 
 var app = builder.Build();
 
