@@ -29,7 +29,7 @@ namespace WebChess.WebApi.Controllers {
 		[HttpPost]
 		[Route("login")]
 		public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto) {
-			var (authToken, refreshToken, userId) = await _userService.LoginAsync(loginRequestDto.Email, loginRequestDto.Password);
+			var (authToken, refreshToken, userId) = await _userService.LoginAsync(loginRequestDto.UserName, loginRequestDto.Password);
 
 			var loginResponseDto = new LoginResponseDto {
 				UserId = userId,

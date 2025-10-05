@@ -67,7 +67,19 @@ builder.Services.AddAuthentication(options => {
 	};
 });
 
+
+
 builder.Services.AddDataAccess(builder.Configuration);
+
+builder.Services.AddCors(options =>
+   {
+       options.AddDefaultPolicy(policy =>
+       {
+           policy.WithOrigins("http://localhost:5173")
+                 .AllowAnyHeader()
+                 .AllowAnyMethod();
+       });
+   });
 
 var app = builder.Build();
 
@@ -89,6 +101,8 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseCors();
 
 app.MapControllerRoute(
     name: "default",

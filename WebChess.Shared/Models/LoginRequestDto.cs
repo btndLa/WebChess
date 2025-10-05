@@ -5,10 +5,9 @@ namespace WebChess.Shared.Models
     public class LoginRequestDto
     {
         [Required]
-        [EmailAddress(ErrorMessage = "Email is invalid")]
-        public required string Email { get; set; }
+        public required string UserName { get; init; }
 
         [Required]
-        public required string Password { get; set; }
+        public required string Password { get; init; }
     }
 }

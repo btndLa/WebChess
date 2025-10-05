@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import GamePage from './pages/GamePage'
+import { UserContextProvider } from './contexts/UserContextProvider'
 
 const router = createBrowserRouter([
     {
@@ -33,7 +34,10 @@ const router = createBrowserRouter([
                 
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <RouterProvider router={router} />
-  </StrictMode>,
+    <UserContextProvider>
+        <StrictMode>
+            <RouterProvider router={router} />
+        </StrictMode>,
+    </UserContextProvider>
+
 )
