@@ -42,7 +42,6 @@ namespace WebChess.DataAccess.Services {
 				throw new UnauthorizedAccessException("Invalid username or password");
 			}
 			var result = await _signInManager.PasswordSignInAsync(user.UserName!, password, false, true);
-			Console.WriteLine("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
 
 			if (!result.Succeeded) {
 				throw new UnauthorizedAccessException("Invalid username or password");

@@ -20,7 +20,6 @@ export async function get<TResponse>(url: string, params?: Record<string, string
 }
 
 export async function postAsJson<TRequest, TResponse>(url: string, body?: TRequest): Promise<TResponse> {
-    console.log("ENV:", import.meta.env.VITE_APP_API_BASEURL);
     const res = await fetch(`${import.meta.env.VITE_APP_API_BASEURL}/${url}`, {
         method: "POST",
         headers: {

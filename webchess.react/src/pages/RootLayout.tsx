@@ -1,12 +1,12 @@
-import React from "react";
 import { Outlet } from "react-router-dom";
+import HeaderBar from "../components/HeaderBar";
 
 export function RootLayout(){
   return (
     <div className="root-layout">
       {/* Header */}
-      <header>
-        <h1>WebChess</h1>
+       <header>
+              <HeaderBar></HeaderBar>
       </header>
       {/* Main Content */}
       <main>
