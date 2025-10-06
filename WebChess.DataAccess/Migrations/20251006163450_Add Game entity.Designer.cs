@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebChess.DataAccess;
 
@@ -11,9 +12,11 @@ using WebChess.DataAccess;
 namespace WebChess.DataAccess.Migrations
 {
     [DbContext(typeof(WebChessDbContext))]
-    partial class WebChessDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251006163450_Add Game entity")]
+    partial class AddGameentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -15,6 +15,12 @@ export default defineConfig({
                 secure: false,
                 rewrite: (path) => path.replace(/^\/api/, '')
             },
+            '/signalr': {
+                target: 'https://localhost:7280', // ws://localhost:5257
+                ws: true,
+                secure: false,
+                rewrite: (path) => path.replace(/^\/signalr/, '')
+            },
         },
     },
 })

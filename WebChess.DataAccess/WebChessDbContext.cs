@@ -11,8 +11,9 @@ using WebChess.DataAccess.Models;
 namespace WebChess.DataAccess;
 
 	public class WebChessDbContext : IdentityDbContext<User, IdentityRole, string >  {
-			
-		public WebChessDbContext(DbContextOptions<WebChessDbContext> options) : base(options) { }
+		public DbSet<Game> Games { get; set; } = null!;
+
+	public WebChessDbContext(DbContextOptions<WebChessDbContext> options) : base(options) { }
 }
 
 

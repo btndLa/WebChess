@@ -8,6 +8,7 @@ using System.Text.Json.Serialization;
 using WebChess.DataAccess;
 using WebChess.DataAccess.Config;
 using WebChess.WebApi.Infrastructure;
+using WebChess.WebApi.SignalR.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -81,6 +82,11 @@ builder.Services.AddCors(options =>
        });
    });
 
+builder.Services.AddSignalR().
+	AddJsonProtocol(options => {
+		options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+	});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -107,5 +113,6 @@ app.UseCors();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapHub<ChessHub>("/chesshub");
 
 app.Run();

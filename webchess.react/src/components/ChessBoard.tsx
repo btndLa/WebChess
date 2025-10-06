@@ -1,5 +1,6 @@
 ﻿import React from "react";
 import { useChessGameContext } from "../contexts/ChessGameContext";
+import { Square } from "chess.js";
 
 const PIECE_UNICODE: Record<string, string> = {
   K: "♔", Q: "♕", R: "♖", B: "♗", N: "♘", P: "♙",
@@ -28,7 +29,7 @@ const ChessBoard: React.FC = () => {
               const rank = 8 - rowIdx;
               const square = `${file}${rank}`;
               const isSelected = selected === square;
-              const isLegal = legalMoves.includes(square);
+              const isLegal = legalMoves.includes(square as Square);
               const isDark = (rowIdx + colIdx) % 2 === 1;
 
               return (
@@ -36,13 +37,14 @@ const ChessBoard: React.FC = () => {
                   key={colIdx}
                   onClick={() => {
                     if (selected && isLegal) {
-                      makeMove(selected, square);
+                        makeMove(selected, square as Square);
+                        console.log(`Move from ${selected} to ${square}`);
                     } else if (
                       cell &&
                       ((turn === "w" && cell === cell.toUpperCase()) ||
                         (turn === "b" && cell === cell.toLowerCase()))
                     ) {
-                      selectSquare(square);
+                      selectSquare(square as Square);
                     }
                   }}
                   style={{

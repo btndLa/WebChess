@@ -1,5 +1,6 @@
 ﻿
 using AutoMapper;
+using WebChess.WebApi.SignalR.Services;
 
 namespace WebChess.WebApi.Infrastructure {
 	public static class DependencyInjection {
@@ -9,6 +10,11 @@ namespace WebChess.WebApi.Infrastructure {
 			mapperConfig.AssertConfigurationIsValid();
 
 			services.AddAutoMapper(typeof(MappingProfile));
+			return services;
+		}
+
+		public static IServiceCollection AddSignalRServices(this IServiceCollection services) {
+			services.AddSingleton<IChessHubService, ChessHubService>();
 			return services;
 		}
 	}

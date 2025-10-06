@@ -31,6 +31,7 @@ namespace WebChess.DataAccess {
 			.AddDefaultTokenProviders();
 
 			services.AddScoped<IUserService, UserService>();
+			services.AddScoped<IGameService, GameService>();
 
 
 			return services;
