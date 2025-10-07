@@ -33,6 +33,21 @@ namespace WebChess.WebApi.Controllers {
 			if (game == null) return NotFound("Game not found or already started");
 			return Ok(new { gameId = game.Id, fen = game.Fen });
 		}
+
+		[HttpGet("{id}")]
+		[Authorize]
+		public async Task<IActionResult> GetGame(Guid id) {
+			var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+			if (userId == null) return Unauthorized();
+
+			var game = await _gameService.GetGame(id);
+			if (game == null) return NotFound();
+
+			if (game.WhitePlayerId != userId && game.BlackPlayerId != userId)
+				return Forbid();
+
+			return Ok(game);
+		}
 	}
 
 	public class JoinGameRequest {

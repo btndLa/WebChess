@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using WebChess.DataAccess.Models;
@@ -35,6 +36,22 @@ namespace WebChess.DataAccess.Services {
             game.BlackPlayerId = userId;
             game.Status = "active";
             await _context.SaveChangesAsync();
+            return game;
+        }
+
+        public async Task<Game?> GetGame(Guid gameId)
+        {
+            var game = await _context.Games
+                .Where(g => g.Id == gameId)
+                .Select(g => new Game
+                {
+                    Id = g.Id,
+                    WhitePlayerId = g.WhitePlayerId,
+                    BlackPlayerId = g.BlackPlayerId,
+                    Fen = g.Fen
+                })
+                .FirstOrDefaultAsync();
+
             return game;
         }
     }
