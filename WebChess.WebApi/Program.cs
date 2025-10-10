@@ -69,7 +69,7 @@ builder.Services.AddAuthentication(options => {
 });
 
 
-
+builder.Services.AddSignalRServices();
 builder.Services.AddDataAccess(builder.Configuration);
 
 builder.Services.AddCors(options =>
@@ -113,6 +113,8 @@ app.UseCors();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-app.MapHub<ChessHub>("/chesshub");
+app.MapHub<ChessHub>("/chessHub", options => {
+	options.CloseOnAuthenticationExpiration = true;
+});
 
 app.Run();

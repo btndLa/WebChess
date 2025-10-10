@@ -8,6 +8,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useNavigate } from "react-router-dom";
+import { useChessGameContext } from "../contexts/ChessGameContext";
 
 export const JoinGameDialog: React.FC<{
   open: boolean;
@@ -15,8 +16,10 @@ export const JoinGameDialog: React.FC<{
 }> = ({ open, onClose }) => {
   const [gameCode, setGameCode] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
+    const [error, setError] = useState<string | null>(null);
+    const [gameId, setGameId] = useState<string | null>(null);
+    const navigate = useNavigate();
+    const { joinGame } = useChessGameContext();
 
   const handleJoin = async () => {
     setLoading(true);
@@ -32,6 +35,8 @@ export const JoinGameDialog: React.FC<{
       });
       if (!res.ok) throw new Error("Invalid or unavailable game code");
       const data = await res.json();
+      setGameId(data.gameId);
+      await joinGame(data.gameId);
       navigate(`/game/${data.gameId}`);
       onClose();
     } catch (e: any) {

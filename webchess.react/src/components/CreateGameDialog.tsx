@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -9,16 +9,19 @@ import CircularProgress from "@mui/material/CircularProgress";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import IconButton from '@mui/material/IconButton';
 import { useNavigate } from "react-router-dom";
+import { useChessGameContext } from "@/contexts/ChessGameContext";
 
 export const CreateGameDialog: React.FC<{
   open: boolean;
   onClose: () => void;
 }> = ({ open, onClose }) => {
-  const [gameId, setGameId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [waiting, setWaiting] = useState(false);
+  const [opponentJoined, setOpponentJoined] = useState(false);
   const navigate = useNavigate();
+  const { gameId, startGame } = useChessGameContext();
 
   const handleCreate = async () => {
     setLoading(true);
@@ -30,7 +33,8 @@ export const CreateGameDialog: React.FC<{
       });
       if (!res.ok) throw new Error("Failed to create game");
       const data = await res.json();
-      setGameId(data.gameId);
+      setWaiting(true);
+      await startGame(onClose, setWaiting, setOpponentJoined, navigate, data.gameId);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Unknown error");
     } finally {
@@ -53,12 +57,6 @@ export const CreateGameDialog: React.FC<{
     }
   };
 
-  React.useEffect(() => {
-    if (open) {
-      setGameId(null);
-      setError(null);
-    }
-  }, [open]);
 
   return (
     <Dialog open={open} onClose={onClose}>
@@ -78,9 +76,8 @@ export const CreateGameDialog: React.FC<{
               </IconButton>
               {copied && <span style={{ marginLeft: 8, color: 'green' }}>Copied!</span>}
             </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-              Waiting for opponent to join...
-            </Typography>
+            {waiting && <Typography>Waiting for opponent to join...</Typography>}
+            {opponentJoined && <Typography color="success.main">Opponent joined! You can start the game.</Typography>}
           </>
         )}
       </DialogContent>

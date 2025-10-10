@@ -13,5 +13,4 @@ foreach (var row in board)
     Console.WriteLine();
 }
 Console.WriteLine(game.GetBoard().ToString());
-// See https://aka.ms/new-console-template for more information
 Console.WriteLine("Hello, World!");

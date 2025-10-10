@@ -40,7 +40,6 @@ export function UserContextProvider({ children }: { children: ReactNode }) {
     }, [handleLoginResponse]);
 
     const handleLogin = useCallback(async (data: LoginRequestDto) => {
-        console.log("here");
         const response = await login(data);
         handleLoginResponse(response);
     }, [handleLoginResponse]);
