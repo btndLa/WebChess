@@ -20,7 +20,7 @@ namespace WebChess.WebApi.Controllers {
 			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 			if (userId == null) return Unauthorized();
 			var game = await _gameService.CreateGameAsync(userId);
-			return Ok(new { gameId = game.Id, fen = game.Fen });
+			return Ok(new { gameId = game.Id, fen = game.Fen, playerColor = game.WhitePlayerId == userId ? "w" : "b" });// TODO consider keeping these parameters
 		}
 
 		[HttpPost("join")]
@@ -31,7 +31,7 @@ namespace WebChess.WebApi.Controllers {
 			if (!Guid.TryParse(request.GameId, out var gameGuid)) return BadRequest("Invalid game code");
 			var game = await _gameService.JoinGameAsync(userId, gameGuid);
 			if (game == null) return NotFound("Game not found or already started");
-			return Ok(new { gameId = game.Id, fen = game.Fen });
+			return Ok(new { gameId = game.Id, fen = game.Fen, playerColor = game.WhitePlayerId == userId ? "w" : "b" }); // TODO consider keeping these parameters
 		}
 
 		[HttpGet("{id}")]

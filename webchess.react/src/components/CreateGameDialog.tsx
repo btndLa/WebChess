@@ -20,19 +20,21 @@ export const CreateGameDialog: React.FC<{
   const [error, setError] = useState<string | null>(null);
   const [waiting, setWaiting] = useState(false);
   const [opponentJoined, setOpponentJoined] = useState(false);
-  const navigate = useNavigate();
-  const { gameId, startGame } = useChessGameContext();
+    const navigate = useNavigate();
+    const { gameId, startGame, setPlayerColor } = useChessGameContext();
 
   const handleCreate = async () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${import.meta.env.VITE_APP_API_BASEURL}/game/create`, {
+      const res = await fetch(`${import.meta.env.VITE_APP_API_BASEURL}/game/create`, { // TODO move this to provider
         method: "POST",
         headers: { "Authorization": `Bearer ${localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!).authToken : ""}` }
       });
       if (!res.ok) throw new Error("Failed to create game");
-      const data = await res.json();
+        const data = await res.json();
+        setPlayerColor(data.playerColor);
+        console.log(data.playerColor);
       setWaiting(true);
       await startGame(onClose, setWaiting, setOpponentJoined, navigate, data.gameId);
     } catch (e) {

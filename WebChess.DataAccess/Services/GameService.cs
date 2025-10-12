@@ -17,12 +17,16 @@ namespace WebChess.DataAccess.Services {
 
         public async Task<Game> CreateGameAsync(string userId)
         {
+            var random = new Random();
+            bool isWhite = random.Next(2) == 0;
+
             var game = new Game
             {
                 Fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
                 Status = "waiting",
                 CreatedAt = DateTime.UtcNow,
-                WhitePlayerId = userId
+                WhitePlayerId = isWhite ? userId : null,
+                BlackPlayerId = isWhite ? null : userId
             };
             await _context.Games.AddAsync(game);
             await _context.SaveChangesAsync();
@@ -32,9 +36,33 @@ namespace WebChess.DataAccess.Services {
         public async Task<Game?> JoinGameAsync(string userId, Guid gameId)
         {
             var game = await _context.Games.FirstOrDefaultAsync(g => g.Id == gameId && g.Status == "waiting");
-            if (game == null || game.WhitePlayerId == userId)
+            if (game == null)
                 return null;
-            game.BlackPlayerId = userId;
+
+            if (game.WhitePlayerId == userId || game.BlackPlayerId == userId)
+                return null;
+
+            if (game.WhitePlayerId == null && game.BlackPlayerId == null)
+            {
+                var random = new Random();
+                if (random.Next(2) == 0)
+                    game.WhitePlayerId = userId;
+                else
+                    game.BlackPlayerId = userId;
+            }
+            else if (game.WhitePlayerId == null)
+            {
+                game.WhitePlayerId = userId;
+            }
+            else if (game.BlackPlayerId == null)
+            {
+                game.BlackPlayerId = userId;
+            }
+            else
+            {
+                return null;
+            }
+
             game.Status = "active";
             await _context.SaveChangesAsync();
             return game;

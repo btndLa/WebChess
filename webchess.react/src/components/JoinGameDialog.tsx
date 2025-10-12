@@ -19,13 +19,13 @@ export const JoinGameDialog: React.FC<{
     const [error, setError] = useState<string | null>(null);
     const [gameId, setGameId] = useState<string | null>(null);
     const navigate = useNavigate();
-    const { joinGame } = useChessGameContext();
+    const { joinGame, setPlayerColor } = useChessGameContext();
 
   const handleJoin = async () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${import.meta.env.VITE_APP_API_BASEURL}/game/join`, {
+        const res = await fetch(`${import.meta.env.VITE_APP_API_BASEURL}/game/join`, { // TODO Move this to provider
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -34,7 +34,10 @@ export const JoinGameDialog: React.FC<{
         body: JSON.stringify({ gameId: gameCode })
       });
       if (!res.ok) throw new Error("Invalid or unavailable game code");
-      const data = await res.json();
+        const data = await res.json();
+        setPlayerColor(data.playerColor);
+        console.log(data.playerColor);
+
       setGameId(data.gameId);
       await joinGame(data.gameId);
       navigate(`/game/${data.gameId}`);

@@ -1,10 +1,8 @@
 ﻿import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ChessGameContextProvider } from "@/contexts/ChessGameContextProvider";
 import ChessBoard from "@/components/ChessBoard";
 import { getGame } from "@/api/client/game-client";
 import type { GameDto } from "@/types/GameDto";
-import { HubConnection } from "@microsoft/signalr";
 
 const GamePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();

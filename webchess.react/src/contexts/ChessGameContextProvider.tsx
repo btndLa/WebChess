@@ -5,20 +5,6 @@ import { HubConnection } from "@microsoft/signalr";
 import { initSignalRConnection } from "../api/client/game-client";
 
 // Utility function to parse FEN to 2D array
-function parseFen(fen: string): (string | null)[][] {
-  const rows = fen.split(" ")[0].split("/");
-  return rows.map(row => {
-    const result: (string | null)[] = [];
-    for (const char of row) {
-      if (/\d/.test(char)) {
-        for (let i = 0; i < Number(char); i++) result.push(null);
-      } else {
-        result.push(char);
-      }
-    }
-    return result;
-  });
-}
 
 const initialFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
@@ -29,19 +15,22 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
   const [selected, setSelected] = useState<Square | null>(null);
     const [legalMoves, setLegalMoves] = useState<Square[]>([]);
     const [gameId, setGameId] = useState<string | null>(null);
+    const [playerColor, setPlayerColor] = useState<"w" | "b" | null>(null);
 
   const turn = chessRef.current.turn() as "w" | "b";
-  const board = parseFen(fen);
+    const board = chessRef.current.board();
 
-  const selectSquare = (square: Square) => {
+
+    const selectSquare = (square: Square) => {
+        console.log(square)
     const piece = chessRef.current.get(square);
-    if (
+        if (
       piece &&
       ((turn === "w" && piece.color === "w") || (turn === "b" && piece.color === "b"))
     ) {
       setSelected(square);
       const moves = (chessRef.current.moves({ square, verbose: true }) as Move[]).map(m => m.to as Square);
-      setLegalMoves(moves);
+            setLegalMoves(moves);
     } else if (selected) {
       makeMove(selected, square);
     } else {
@@ -85,11 +74,12 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
       onClose();
       navigate(`/game/${id}`);
     });
-    conn.on("moveReceived", handleMoveReceived);
+    conn.on("moveReceived", handleMoveReceived); // TODO put this in a function as this is duplicated in joinGame
     conn.on("gameOver", () => console.log("game over"));
     await conn.start();
     await conn.invoke("JoinGameGroup", id);
-    connectionRef.current = conn;
+      connectionRef.current = conn;
+      
     setGameId(id);
   };
 
@@ -111,7 +101,7 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
   };
 
   return (
-    <ChessGameContext.Provider
+    <ChessGameContext.Provider // TODO review what to pass
       value={{
         board,
         fen,
@@ -126,6 +116,8 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
         startGame,
         joinGame,
         connectionRef,
+        playerColor,
+        setPlayerColor,
       }}
     >
       {children}
