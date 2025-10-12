@@ -1,4 +1,4 @@
-import { useState, ReactNode, useRef, useEffect } from "react";
+import { useState, ReactNode, useRef } from "react";
 import { Chess, Square, Move } from "chess.js";
 import { ChessGameContext } from "./ChessGameContext";
 import { HubConnection } from "@microsoft/signalr";
@@ -16,6 +16,7 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
     const [legalMoves, setLegalMoves] = useState<Square[]>([]);
     const [gameId, setGameId] = useState<string | null>(null);
     const [playerColor, setPlayerColor] = useState<"w" | "b" | null>(null);
+    const [takenPieces, setTakenPieces] = useState<{ type: string, color: "w" | "b" }[]>([]);
 
   const turn = chessRef.current.turn() as "w" | "b";
     const board = chessRef.current.board();
@@ -41,6 +42,13 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
 
   // Handler function for moveReceived
   const handleMoveReceived = (from: string, to: string, newFen: string) => {
+    const move = chessRef.current.move({ from, to });
+    if (move && move.captured) {
+      setTakenPieces(prev => [
+        ...prev,
+        { type: move.captured as string, color: move.color === "w" ? "b" : "w" }
+      ]);
+    }
     chessRef.current.load(newFen);
     setFen(newFen);
     setSelected(null);
@@ -50,6 +58,12 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
   const makeMove = (from: Square, to: Square) => {
     const move = chessRef.current.move({ from, to });
     if (move) {
+        if (move && move.captured) {
+            setTakenPieces(prev => [
+                ...prev,
+                { type: move.captured as string, color: move.color === "w" ? "b" : "w" }
+            ]);
+        }
       setFen(chessRef.current.fen());
       setSelected(null);
       setLegalMoves([]);
@@ -118,6 +132,7 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
         connectionRef,
         playerColor,
         setPlayerColor,
+        takenPieces,
       }}
     >
       {children}

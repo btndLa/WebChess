@@ -1,11 +1,8 @@
 ﻿import React from "react";
 import { useChessGameContext } from "../contexts/ChessGameContext";
 import { Square } from "chess.js";
+import { PIECE_UNICODE } from "@/utils/pieces"
 
-const PIECE_UNICODE: Record<string, string> = {
-  K: "♔", Q: "♕", R: "♖", B: "♗", N: "♘", P: "♙", // TODO change this
-  k: "♚", q: "♛", r: "♜", b: "♝", n: "♞", p: "♟",
-};
 
 const files = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
