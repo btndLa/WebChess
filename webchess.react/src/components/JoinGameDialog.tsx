@@ -20,7 +20,7 @@ export const JoinGameDialog: React.FC<{
     const [gameId, setGameId] = useState<string | null>(null);
     const navigate = useNavigate();
     const { joinGame, setPlayerColor } = useChessGameContext();
-
+    //TODO add error messages
   const handleJoin = async () => {
     setLoading(true);
     setError(null);

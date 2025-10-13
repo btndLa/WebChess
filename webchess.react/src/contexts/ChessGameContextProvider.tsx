@@ -16,7 +16,7 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
     const [legalMoves, setLegalMoves] = useState<Square[]>([]);
     const [gameId, setGameId] = useState<string | null>(null);
     const [playerColor, setPlayerColor] = useState<"w" | "b" | null>(null);
-    const [takenPieces, setTakenPieces] = useState<{ type: string, color: "w" | "b" }[]>([]);
+    const [takenPieces, setTakenPieces] = useState<string[]>([]);
 
   const turn = chessRef.current.turn() as "w" | "b";
     const board = chessRef.current.board();
@@ -45,8 +45,8 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
     const move = chessRef.current.move({ from, to });
     if (move && move.captured) {
       setTakenPieces(prev => [
-        ...prev,
-        { type: move.captured as string, color: move.color === "w" ? "b" : "w" }
+          ...prev,
+          move.color === "w" ? (move.captured as string).toLowerCase() : (move.captured as string).toUpperCase()
       ]);
     }
     chessRef.current.load(newFen);
@@ -57,22 +57,16 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
 
   const makeMove = (from: Square, to: Square) => {
     const move = chessRef.current.move({ from, to });
-    if (move) {
-        if (move && move.captured) {
-            setTakenPieces(prev => [
-                ...prev,
-                { type: move.captured as string, color: move.color === "w" ? "b" : "w" }
-            ]);
-        }
-      setFen(chessRef.current.fen());
-      setSelected(null);
-      setLegalMoves([]);
-      connectionRef.current?.invoke("MakeMove", gameId, from, to)
-        .catch(err => console.error("MakeMove error", err));
-    } else {
-      setSelected(null);
-      setLegalMoves([]);
+    if (move && move.captured) {
+        setTakenPieces(prev => [
+            ...prev,
+            move.color === "w" ? (move.captured as string).toLowerCase() : (move.captured as string).toUpperCase()]);
     }
+    setFen(chessRef.current.fen());
+    setSelected(null);
+    setLegalMoves([]);
+    connectionRef.current?.invoke("MakeMove", gameId, from, to)
+    .catch(err => console.error("MakeMove error", err));
   };
   const startGame = async (
     onClose: () => void,

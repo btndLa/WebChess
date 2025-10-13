@@ -11,8 +11,8 @@ const GamePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [game, setGame] = useState<GameDto | null>(null);
-  const [loading, setLoading] = useState(true);
-  const { takenPieces } = useChessGameContext();
+    const [loading, setLoading] = useState(true);
+    const { takenPieces, playerColor } = useChessGameContext();
 
   useEffect(() => {
     if (!id) return;
@@ -34,16 +34,15 @@ const GamePage: React.FC = () => {
   if (loading) return <div>Loading...</div>;
     if (!game) return null;
 
-    const takenWhite = takenPieces
-        .filter(piece => piece.color === "w")
-        .map(piece => piece.type.toUpperCase());
-    const takenBlack = takenPieces
-        .filter((piece) => piece.color == "b")
-        .map(piece => piece.type.toLowerCase());
+    const playerPieces = takenPieces.filter(piece =>
+      (playerColor === "w" && piece === piece.toUpperCase()) ||
+      (playerColor === "b" && piece === piece.toLowerCase())
+    );
 
-    console.log("piece",takenPieces)
-    console.log("white",takenWhite)
-
+    const opponentPieces = takenPieces.filter(piece =>
+      (playerColor === "w" && piece === piece.toLowerCase()) ||
+      (playerColor === "b" && piece === piece.toUpperCase())
+    );
 
   return (
     <div
@@ -54,10 +53,11 @@ const GamePage: React.FC = () => {
         marginTop: "2rem",
       }}
       >
-      <strong>Black taken:</strong> {takenBlack.map((p) => PIECE_UNICODE[p]).join(" ")} {/* change this based on flip position */}
-          <ChessBoard />
-          <strong>White taken:</strong> {takenWhite.map((p) => PIECE_UNICODE[p]).join(" ")}
-
+       <div>
+        {playerPieces.map((p) => PIECE_UNICODE[p]).join(" ")}
+        <ChessBoard />
+        {opponentPieces.map((p) => PIECE_UNICODE[p]).join(" ")}
+      </div>
     </div>
   );
 };
