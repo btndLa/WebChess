@@ -27,6 +27,7 @@ export interface ChessGameContextType {
     playerColor: "w" | "b" | null;
     setPlayerColor: (color: "w" | "b" | null) => void;
     takenPieces: string[]
+    chessRef: React.RefObject<Chess | null>
 }
 
 export const ChessGameContext = createContext<ChessGameContextType | undefined>(undefined);

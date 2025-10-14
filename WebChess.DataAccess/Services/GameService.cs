@@ -102,5 +102,13 @@ namespace WebChess.DataAccess.Services {
 
             return (true, game.Fen, null);
         }
-    }
+
+		public async Task<Game?> EndGameAsync(string gameId) {
+			var game = await _context.Games.FindAsync(new Guid(gameId));
+			if (game == null) return null;
+            game.Status = "ended";
+			await _context.SaveChangesAsync();
+			return game;
+		}
+	}
 }

@@ -21,7 +21,6 @@ namespace WebChess.WebApi.SignalR.Hubs {
 				return;
 			}
 
-			// Broadcast the move and new FEN to all clients in the group except the sender
 			await Clients.GroupExcept(gameId, Context.ConnectionId)
 				.SendAsync("MoveReceived", from, to, newFen);
 		}
@@ -30,6 +29,11 @@ namespace WebChess.WebApi.SignalR.Hubs {
 		public async Task JoinGameGroup(string gameId)
 		{
 			await _hubService.JoinGameAsync(Context.ConnectionId, gameId);
+		}
+
+		public async Task EndGame(string gameId) { //TODO namings
+			await Clients.Group(gameId).SendAsync("GameOver");
+			await Groups.RemoveFromGroupAsync(Context.ConnectionId, gameId);
 		}
 	}
 }

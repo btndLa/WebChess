@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using WebChess.DataAccess.Services;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Security.Claims;
+using WebChess.DataAccess.Models;
+using WebChess.DataAccess.Services;
+using WebChess.Shared.Models;
 
 namespace WebChess.WebApi.Controllers {
 	[ApiController]
@@ -48,9 +50,20 @@ namespace WebChess.WebApi.Controllers {
 
 			return Ok(game);
 		}
-	}
 
-	public class JoinGameRequest {
-		public string GameId { get; set; } = string.Empty;
+		[HttpPost("end")]
+		[Authorize]
+		public async Task<IActionResult> EndGame([FromBody] EndGameRequest request)
+		{
+			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+			if (userId == null) return Unauthorized();
+			var game = await _gameService.EndGameAsync(request.GameId);
+			if (game == null) return NotFound("Game not found");
+			return Ok(new { gameId = game.Id, fen = game.Fen, playerColor = game.WhitePlayerId == userId ? "w" : "b" });
+		}
+
+		public class JoinGameRequest { //TODO maybe remove this
+			public string GameId { get; set; } = string.Empty;
+		}
 	}
 }

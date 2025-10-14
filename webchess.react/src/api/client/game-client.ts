@@ -1,6 +1,6 @@
 import { HubConnectionBuilder, LogLevel, HubConnection, IHttpConnectionOptions } from "@microsoft/signalr";
 import type { GameDto } from "@/types/GameDto";
-import { get } from "@/api/client/http";
+import { get, postAsJsonWithoutResponse } from "@/api/client/http";
 import { accessTokenFactory } from "@/signalR/accessTokenFactory";
 
 export async function getGame(id: string): Promise<GameDto> {
@@ -16,6 +16,9 @@ export function initSignalRConnection(): HubConnection {
         .configureLogging(LogLevel.Information)
         .build();
 
-    console.log("inside hub connection:", connection)
     return connection;
+}
+
+export async function endGame(gameId: string) : Promise<void> {
+    return await postAsJsonWithoutResponse<{ gameId: string }>("game/end", { gameId }); //TODO error here
 }

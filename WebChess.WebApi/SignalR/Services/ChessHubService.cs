@@ -14,9 +14,5 @@ namespace WebChess.WebApi.SignalR.Services {
 			await _hubContext.Groups.AddToGroupAsync(connectionId, gameId);
 			await _hubContext.Clients.GroupExcept(gameId, connectionId).SendAsync("PlayerJoined", connectionId);
 		}
-
-		public async Task MakeMoveAsync(string connectionId, string gameId, string from, string to) {
-			await _hubContext.Clients.GroupExcept(gameId, connectionId).SendAsync("ReceiveMove", from, to);
-		}
 	}
 }
