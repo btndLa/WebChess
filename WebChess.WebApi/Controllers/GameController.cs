@@ -53,7 +53,7 @@ namespace WebChess.WebApi.Controllers {
 
 		[HttpPost("end")]
 		[Authorize]
-		public async Task<IActionResult> EndGame([FromBody] EndGameRequest request)
+		public async Task<IActionResult> EndGame([FromBody] EndGameRequestDto request)
 		{
 			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 			if (userId == null) return Unauthorized();

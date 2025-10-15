@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace WebChess.Shared.Models {
-	public class EndGameRequest {
+	public class EndGameRequestDto {
         public string GameId { get; set; } = string.Empty;
 	}
 }
