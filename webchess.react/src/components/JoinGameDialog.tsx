@@ -19,7 +19,7 @@ export const JoinGameDialog: React.FC<{
     const [error, setError] = useState<string | null>(null);
     const [gameId, setGameId] = useState<string | null>(null);
     const navigate = useNavigate();
-    const { joinGame, setPlayerColor } = useChessGameContext();
+    const { joinGame, setPlayerColor, loadGame } = useChessGameContext();
     //TODO add error messages
     const handleJoin = async () => {
     setLoading(true);
@@ -39,7 +39,8 @@ export const JoinGameDialog: React.FC<{
         const data = await res.json();
         setPlayerColor(data.playerColor);
       setGameId(data.id);
-      await joinGame(data.id);
+        await joinGame(data.id);
+          loadGame(data);
       navigate(`/game/${data.id}`);
       onClose();
     } catch (e: any) {

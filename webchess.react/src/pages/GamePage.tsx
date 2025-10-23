@@ -7,6 +7,7 @@ import { useChessGameContext } from "@/contexts/ChessGameContext";
 import { PIECE_UNICODE } from "@/utils/pieces";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
+import MoveHistoryTable from "../components/MoveHistoryTable";
 
 const GamePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -81,11 +82,18 @@ const GamePage: React.FC = () => {
       <Box sx={{ width: "100%", mb: 2 }}>
         <Alert severity={severity}>{statusMessage}</Alert>
       </Box>
-      <div>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0, alignItems: 'flex-start' }}>
         {playerPieces.map((p) => PIECE_UNICODE[p]).join(" ")}
-        <ChessBoard />
+        <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2, alignItems: 'stretch' }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
+                <ChessBoard />
+            </Box>
+            <Box sx={{ width: '300px', minHeight: '384px' }}>
+                <MoveHistoryTable />
+            </Box>
+        </Box>
         {opponentPieces.map((p) => PIECE_UNICODE[p]).join(" ")}
-      </div>
+      </Box>
     </div>
   );
 };

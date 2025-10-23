@@ -19,7 +19,15 @@ const HeaderBar: React.FC = () => {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h6"
+            component="div"
+            onClick={() => navigate('/')}
+            sx={{
+              flexGrow: 1, // This makes the Typography element expand, pushing other items to the right.
+              cursor: 'pointer'
+            }}
+          >
             WebChess
           </Typography>
           {!loggedIn ? (

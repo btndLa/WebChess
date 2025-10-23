@@ -11,7 +11,7 @@ export interface ChessGameContextType {
   selected: Square | null;
   legalMoves: Square[];
   selectSquare: (square: Square) => void;
-  makeMove: (from: Square, to: Square) => void;
+  makeMove: (from: Square, to: Square, promotion?: string) => void;
   resetGame: () => void;
   gameId: string | null;
   setGameId: (id: string | null) => void;
@@ -20,8 +20,10 @@ export interface ChessGameContextType {
   connectionRef: React.RefObject<HubConnection | null>;
   playerColor: "w" | "b" | null;
   setPlayerColor: (color: "w" | "b" | null) => void;
-  takenPieces: string[]
-  chessRef: React.RefObject<Chess | null>
+    takenPieces: string[];
+    chessRef: React.RefObject<Chess | null>;
+    promotionMove: { from: Square; to: Square } | null;
+    moveHistory: string[];
 }
 
 export const ChessGameContext = createContext<ChessGameContextType | undefined>(undefined);

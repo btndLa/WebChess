@@ -14,15 +14,15 @@ namespace WebChess.WebApi.SignalR.Hubs {
 			_gameService = gameService;
 		}
 
-		public async Task MakeMove(string gameId, string from, string to) {
-			var (success, newFen, error) = await _gameService.ApplyMoveAsync(Guid.Parse(gameId), from, to);
+		public async Task MakeMove(string gameId, string from, string to, string san, char? promotion) {
+			var (success, newFen, error) = await _gameService.ApplyMoveAsync(Guid.Parse(gameId), from, to, san, promotion);
 			if (!success) {
 				await Clients.Caller.SendAsync("MoveRejected", error);
 				return;
 			}
 
 			await Clients.GroupExcept(gameId, Context.ConnectionId)
-				.SendAsync("MoveReceived", from, to, newFen);
+				.SendAsync("MoveReceived", from, to, promotion, newFen);
 		}
 
 

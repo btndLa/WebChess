@@ -1,9 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using ChessDotNet;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using WebChess.DataAccess.Models;
-using ChessDotNet;
 
 namespace WebChess.DataAccess.Services {
 	public class GameService : IGameService
@@ -84,21 +85,34 @@ namespace WebChess.DataAccess.Services {
             return game;
         }
 
-        public async Task<(bool Success, string? NewFen, string? Error)> ApplyMoveAsync(Guid gameId, string from, string to)
+        public async Task<(bool Success, string? NewFen, string? Error)> ApplyMoveAsync(Guid gameId, string from, string to, string san, char? promotion)
         {
+            Console.WriteLine("san", san);
             var game = await _context.Games.FindAsync(gameId);
             if (game == null) return (false, null, "Game not found");
 
             var chessGame = new ChessGame(game.Fen);
-            var move = new Move(from, to, chessGame.WhoseTurn);
+            var capturedPiece = chessGame.GetPieceAt(new Position(to));
+            var move = new Move(from, to, chessGame.WhoseTurn, promotion);
 
 
             if (!chessGame.IsValidMove(move))
                 return (false, null, "Invalid move");
 
-            chessGame.MakeMove(move, true);
             game.Fen = chessGame.GetFen();
-            await _context.SaveChangesAsync();
+            if(capturedPiece != null) {
+				var takenPiecesList = new List<char>(game.TakenPieces);
+				takenPiecesList.Add(capturedPiece.GetFenCharacter());
+				game.TakenPieces = takenPiecesList.ToArray();
+			}
+			var moveHistoryList = new List<string>(game.MoveHistory);
+            Console.WriteLine(san); //TODO fix this, hte convert works, but still stroes it in json encode, not even sure if it is  aproblem
+            Console.WriteLine(Regex.Unescape(san));
+            moveHistoryList.Add(Regex.Unescape(san));
+            game.MoveHistory = moveHistoryList.ToArray();
+			chessGame.MakeMove(move, true);
+			game.Fen = chessGame.GetFen();
+			await _context.SaveChangesAsync();
 
             return (true, game.Fen, null);
         }

@@ -10,7 +10,7 @@ namespace WebChess.DataAccess.Services {
 		Task<Game> CreateGameAsync(string userId);
 		Task<Game?> JoinGameAsync(string userId, Guid gameId);
         Task<Game?> GetGame(Guid gameId);
-        Task<(bool Success, string? NewFen, string? Error)> ApplyMoveAsync(Guid gameId, string from, string to);
+        Task<(bool Success, string? NewFen, string? Error)> ApplyMoveAsync(Guid gameId, string from, string to, string san, char? promotion);
 		Task<Game?> EndGameAsync(string gameId);
 
 	}
