@@ -21,7 +21,7 @@ export const JoinGameDialog: React.FC<{
     const navigate = useNavigate();
     const { joinGame, setPlayerColor } = useChessGameContext();
     //TODO add error messages
-  const handleJoin = async () => {
+    const handleJoin = async () => {
     setLoading(true);
     setError(null);
     try {
@@ -32,15 +32,15 @@ export const JoinGameDialog: React.FC<{
           "Authorization": `Bearer ${localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!).authToken : ""}`
         },
         body: JSON.stringify({ gameId: gameCode })
-      });
+        });
+        console.log(res);
+
       if (!res.ok) throw new Error("Invalid or unavailable game code");
         const data = await res.json();
         setPlayerColor(data.playerColor);
-        console.log(data.playerColor);
-
-      setGameId(data.gameId);
-      await joinGame(data.gameId);
-      navigate(`/game/${data.gameId}`);
+      setGameId(data.id);
+      await joinGame(data.id);
+      navigate(`/game/${data.id}`);
       onClose();
     } catch (e: any) {
       setError(e.message);

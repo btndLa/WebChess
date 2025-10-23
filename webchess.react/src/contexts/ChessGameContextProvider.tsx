@@ -3,8 +3,12 @@ import { Chess, Square, Move } from "chess.js";
 import { ChessGameContext } from "./ChessGameContext";
 import { HubConnection } from "@microsoft/signalr";
 import { endGame, initSignalRConnection } from "../api/client/game-client";
+import { useUserContext } from "./UserContext";
+import { GameResponseDto } from "../api/models/GameResponseDto";
 
 // Utility function to parse FEN to 2D array
+
+//TODO transfer to always update and receive from backend
 
 const initialFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
@@ -55,7 +59,8 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
     setLegalMoves([]);
   };
 
-  const makeMove = (from: Square, to: Square) => {
+    const makeMove = (from: Square, to: Square) => {
+      console.log(takenPieces)
     const move = chessRef.current.move({ from, to });
     if (move && move.captured) {
         setTakenPieces(prev => [
@@ -70,29 +75,15 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
       setSelected(null);
     setLegalMoves([]);
     connectionRef.current?.invoke("MakeMove", gameId, from, to)
-  };
-  const startGame = async (
-    onClose: () => void,
-    setWaiting: (waiting: boolean) => void,
-    setOpponentJoined: (joined: boolean) => void,
-    navigate: (url: string) => void,
-    id: string
-  ) => {
-    const conn = initSignalRConnection();
-    conn.on("PlayerJoined", () => {
-      setOpponentJoined(true);
-      setWaiting(false);
-      onClose();
-      navigate(`/game/${id}`);
-    });
-      setGameId(id);
-      conn.on("MoveReceived", handleMoveReceived); // TODO put this in a function as this is duplicated in joinGame
-      conn.on("GameOver", () => endGame(id));
+    };
 
-    await conn.start();
-    await conn.invoke("JoinGameGroup", id);
-      connectionRef.current = conn;
-      
+
+    const loadGame = async (gameData: GameResponseDto) => { // Add a gameResponseDto
+        setGameId(gameData.id);
+        setPlayerColor(gameData.playerColor);
+      chessRef.current.load(gameData.fen);
+      setFen(gameData.fen);
+      //setTakenPieces(gameData.takenPieces); should add
   };
 
   const joinGame = async (id: string) => {
@@ -103,7 +94,7 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
     await conn.invoke("JoinGameGroup", id);
     connectionRef.current = conn;
     setGameId(id);
-  };
+    };
 
   const resetGame = () => {
     chessRef.current.reset();
@@ -125,7 +116,7 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
         resetGame,
         gameId,
         setGameId,
-        startGame,
+        loadGame,
         joinGame,
         connectionRef,
         playerColor,

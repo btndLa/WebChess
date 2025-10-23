@@ -1,6 +1,7 @@
 import { createContext, useContext } from "react";
 import type { Square } from "chess.js";
 import { HubConnection } from "@microsoft/signalr";
+import { GameResponseDto } from "../api/models/GameResponseDto";
 
 
 export interface ChessGameContextType {
@@ -14,20 +15,13 @@ export interface ChessGameContextType {
   resetGame: () => void;
   gameId: string | null;
   setGameId: (id: string | null) => void;
-  startGame: (
-    onClose: () => void,
-    setWaiting: (waiting: boolean) => void,
-      setOpponentJoined: (joined: boolean) => void,
-      navigate: (url: string) => void,
-      gameId: string
-
-    ) => Promise<void>;
-    joinGame: (id: string) => void;
-    connectionRef: React.RefObject<HubConnection | null>;
-    playerColor: "w" | "b" | null;
-    setPlayerColor: (color: "w" | "b" | null) => void;
-    takenPieces: string[]
-    chessRef: React.RefObject<Chess | null>
+    loadGame: (gameData: GameResponseDto) => Promise<void>;
+  joinGame: (id: string) => void;
+  connectionRef: React.RefObject<HubConnection | null>;
+  playerColor: "w" | "b" | null;
+  setPlayerColor: (color: "w" | "b" | null) => void;
+  takenPieces: string[]
+  chessRef: React.RefObject<Chess | null>
 }
 
 export const ChessGameContext = createContext<ChessGameContextType | undefined>(undefined);

@@ -11,6 +11,9 @@ namespace WebChess.WebApi.Infrastructure {
 			.ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName));
 
 			CreateMap<User, UserResponseDto>(MemberList.Destination);
+
+            CreateMap<Game, GameResponseDto>(MemberList.Destination)
+                .ForMember(dest => dest.PlayerColor, opt => opt.Ignore());
 		}
 
 	}

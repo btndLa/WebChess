@@ -2,7 +2,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import ChessBoard from "@/components/ChessBoard";
 import { getGame } from "@/api/client/game-client";
-import type { GameDto } from "@/types/GameDto";
+import type { GameResponseDto } from "@/api/models/GameResponseDto";
 import { useChessGameContext } from "@/contexts/ChessGameContext";
 import { PIECE_UNICODE } from "@/utils/pieces";
 import Alert from "@mui/material/Alert";
@@ -11,7 +11,7 @@ import Box from "@mui/material/Box";
 const GamePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [game, setGame] = useState<GameDto | null>(null);
+  const [game, setGame] = useState<GameResponseDto | null>(null); // I mught not need this
   const [loading, setLoading] = useState(true);
   const { chessRef, takenPieces, playerColor } = useChessGameContext();
 

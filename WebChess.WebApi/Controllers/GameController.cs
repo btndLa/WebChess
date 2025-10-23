@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Security.Claims;
@@ -11,9 +12,11 @@ namespace WebChess.WebApi.Controllers {
 	[Route("/game")]
 	public class GamesController : ControllerBase {
 		private readonly IGameService _gameService;
+		private readonly IMapper _mapper;
 
-		public GamesController(IGameService gameService) {
+		public GamesController(IGameService gameService, IMapper mapper) {
 			_gameService = gameService;
+			_mapper = mapper;
 		}
 
 		[HttpPost("create")]
@@ -22,7 +25,11 @@ namespace WebChess.WebApi.Controllers {
 			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 			if (userId == null) return Unauthorized();
 			var game = await _gameService.CreateGameAsync(userId);
-			return Ok(new { gameId = game.Id, fen = game.Fen, playerColor = game.WhitePlayerId == userId ? "w" : "b" });// TODO consider keeping these parameters
+
+			var gameDto = _mapper.Map<GameResponseDto>(game);
+			gameDto.PlayerColor = game.WhitePlayerId == userId ? "w" : "b";
+			
+			return Ok(gameDto);
 		}
 
 		[HttpPost("join")]
@@ -33,7 +40,11 @@ namespace WebChess.WebApi.Controllers {
 			if (!Guid.TryParse(request.GameId, out var gameGuid)) return BadRequest("Invalid game code");
 			var game = await _gameService.JoinGameAsync(userId, gameGuid);
 			if (game == null) return NotFound("Game not found or already started");
-			return Ok(new { gameId = game.Id, fen = game.Fen, playerColor = game.WhitePlayerId == userId ? "w" : "b" }); // TODO consider keeping these parameters
+
+			var gameDto = _mapper.Map<GameResponseDto>(game);
+			gameDto.PlayerColor = game.WhitePlayerId == userId ? "w" : "b";
+
+			return Ok(gameDto);
 		}
 
 		[HttpGet("{id}")]
@@ -48,7 +59,10 @@ namespace WebChess.WebApi.Controllers {
 			if (game.WhitePlayerId != userId && game.BlackPlayerId != userId)
 				return Forbid();
 
-			return Ok(game);
+			var gameDto = _mapper.Map<GameResponseDto>(game);
+			gameDto.PlayerColor = game.WhitePlayerId == userId ? "w" : "b";
+
+			return Ok(gameDto);
 		}
 
 		[HttpPost("end")]
@@ -59,10 +73,14 @@ namespace WebChess.WebApi.Controllers {
 			if (userId == null) return Unauthorized();
 			var game = await _gameService.EndGameAsync(request.GameId);
 			if (game == null) return NotFound("Game not found");
-			return Ok(new { gameId = game.Id, fen = game.Fen, playerColor = game.WhitePlayerId == userId ? "w" : "b" });
+
+			var gameDto = _mapper.Map<GameResponseDto>(game);
+			gameDto.PlayerColor = game.WhitePlayerId == userId ? "w" : "b";
+			
+			return Ok(gameDto);
 		}
 
-		public class JoinGameRequest { //TODO maybe remove this
+		public class JoinGameRequest {
 			public string GameId { get; set; } = string.Empty;
 		}
 	}

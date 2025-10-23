@@ -10,6 +10,8 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import IconButton from '@mui/material/IconButton';
 import { useNavigate } from "react-router-dom";
 import { useChessGameContext } from "@/contexts/ChessGameContext";
+import { createGame } from "../api/client/game-client";
+import { useUserContext } from "../contexts/UserContext";
 
 export const CreateGameDialog: React.FC<{
   open: boolean;
@@ -21,22 +23,23 @@ export const CreateGameDialog: React.FC<{
   const [waiting, setWaiting] = useState(false);
   const [opponentJoined, setOpponentJoined] = useState(false);
     const navigate = useNavigate();
-    const { gameId, startGame, setPlayerColor } = useChessGameContext();
+    const { gameId, joinGame, loadGame, connectionRef } = useChessGameContext();
 
   const handleCreate = async () => {
     setLoading(true);
     setError(null);
-    try {
-      const res = await fetch(`${import.meta.env.VITE_APP_API_BASEURL}/game/create`, { // TODO move this to provider
-        method: "POST",
-        headers: { "Authorization": `Bearer ${localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!).authToken : ""}` }
-      });
-      if (!res.ok) throw new Error("Failed to create game");
-        const data = await res.json();
-        setPlayerColor(data.playerColor);
-        console.log(data.playerColor);
+      try {
+          const gameData = await createGame();
+          console.log(gameData);
+          await joinGame(gameData.id);
+          loadGame(gameData);
+          connectionRef.current?.on("PlayerJoined", () => {
+              setOpponentJoined(true);
+              setWaiting(false);
+              onClose();
+              navigate(`/game/${gameData.id}`);
+          });
       setWaiting(true);
-      await startGame(onClose, setWaiting, setOpponentJoined, navigate, data.gameId);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Unknown error");
     } finally {

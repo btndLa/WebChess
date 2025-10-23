@@ -1,10 +1,14 @@
 import { HubConnectionBuilder, LogLevel, HubConnection, IHttpConnectionOptions } from "@microsoft/signalr";
-import type { GameDto } from "@/types/GameDto";
-import { get, postAsJsonWithoutResponse } from "@/api/client/http";
+import type { GameResponseDto } from "@/api/models/GameResponseDto";
+import { get, postAsJson, postAsJsonWithoutResponse } from "@/api/client/http";
 import { accessTokenFactory } from "@/signalR/accessTokenFactory";
 
-export async function getGame(id: string): Promise<GameDto> {
-    return await get<GameDto>(`game/${id}`);
+export async function getGame(id: string): Promise<GameResponseDto> {
+    return await get<GameResponseDto>(`game/${id}`);
+}
+
+export async function createGame(): Promise<GameResponseDto> {
+    return await postAsJson<undefined, GameResponseDto>("game/create"); // TODO might need to adjust return types
 }
 
 export function initSignalRConnection(): HubConnection {
