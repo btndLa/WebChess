@@ -1,4 +1,4 @@
-import { useState, ReactNode, useRef } from "react";
+import { useState, ReactNode, useRef, useCallback } from "react";
 import { Chess, Square, Move } from "chess.js";
 import { ChessGameContext } from "./ChessGameContext";
 import { HubConnection } from "@microsoft/signalr";
@@ -23,14 +23,19 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
     const [takenPieces, setTakenPieces] = useState<string[]>([]);
     const [moveHistory, setMoveHistory] = useState<string[]>([]);
     const [promotionMove, setPromotionMove] = useState<{ from: Square; to: Square } | null>(null);
+    const [isActiveGame, setIsActiveGame] = useState<boolean>(false)
 
 
   const turn = chessRef.current.turn() as "w" | "b";
     const board = chessRef.current.board();
 
+    const deselectSquare = () => {
+        setSelected(null);
+        setLegalMoves([]);
+    };
 
     const selectSquare = (square: Square) => {
-        console.log(square)
+        if (!isActiveGame) return;
     const piece = chessRef.current.get(square);
         if (
       piece &&
@@ -46,22 +51,31 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
       setLegalMoves([]);
     }
   };
-    const handleMoveReceived = (from: string, to: string, promotion: string, newFen: string) => {
-        const move = chessRef.current.move({ from, to, promotion });
-    if (move && move.captured) {
-      setTakenPieces(prev => [
-          ...prev,
-          move.color === "w" ? (move.captured as string).toLowerCase() : (move.captured as string).toUpperCase()
-      ]);
-    }
-    chessRef.current.load(newFen);
-        setFen(newFen);
-    setMoveHistory(prev => [...prev, move.san]);
-    setSelected(null);
-    setLegalMoves([]);
-  };
+    const handleMoveReceived = useCallback((from: string, to: string, promotion: string | null, newFen?: string) => {
+        const finalFen = newFen === undefined ? promotion : newFen;
+        if (!finalFen) return;
 
-    const makeMove = (from: Square, to: Square, promotion?: string) => {
+        chessRef.current.load(finalFen);
+        setFen(finalFen);
+
+        const history = chessRef.current.history({ verbose: true });
+        const lastMove = history[history.length - 1];
+        if (lastMove && lastMove.captured) {
+            setTakenPieces(prev => [
+                ...prev,
+                lastMove.color === "w" ? (lastMove.captured as string).toLowerCase() : (lastMove.captured as string).toUpperCase()
+            ]);
+        }
+        if (lastMove) {
+            setMoveHistory(prev => [...prev, lastMove.san]);
+        }
+
+        setSelected(null);
+        setLegalMoves([]);
+    }, []);
+
+    const makeMove = (from: Square, to: Square, promotion?: string) => { // TODO consider useCallbacks
+        if (!isActiveGame) return;
         const piece = chessRef.current.get(from);
         const isPromotion = (piece?.type === 'p') && ((piece.color === 'w' && to[1] === '8') || (piece.color === 'b' && to[1] === '1'));
 
@@ -77,12 +91,11 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
         }
         setFen(chessRef.current.fen());
         if (chessRef.current.isGameOver()) {
-            connectionRef.current?.invoke("EndGame", gameId)
-
+            connectionRef.current?.invoke("EndGame", gameId, playerColor)
         }
         setSelected(null);
         setLegalMoves([]);
-        connectionRef.current?.invoke("MakeMove", gameId, from, to, move.san, promotion)// TODO not perfect san
+        connectionRef.current?.invoke("MakeMove", gameId, from, to, move.san, promotion)
         setMoveHistory(prev => [...prev, move.san]);
         setPromotionMove(null);
     };
@@ -93,18 +106,23 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
         setPlayerColor(gameData.playerColor);
       chessRef.current.load(gameData.fen);
       setFen(gameData.fen);
-      //setTakenPieces(gameData.takenPieces); should add
-  };
+        setTakenPieces(gameData.takenPieces);
+        setMoveHistory(gameData.moveHistory);
+    };
 
   const joinGame = async (id: string) => {
     const conn = initSignalRConnection();
       conn.on("MoveReceived", handleMoveReceived);
-      conn.on("GameOver", () => endGame(id));
+      conn.on("GameOver", (winner) => {
+          console.log("winenr")
+          endGame(id, winner);
+          setIsActiveGame(false);
+      });
     await conn.start();
-    await conn.invoke("JoinGameGroup", id);
+    await conn.invoke("JoinGameGroup", id); //TODO WHen joining to exisitng game, getting a warning
       connectionRef.current = conn;
-    //TODO loadGame
-    setGameId(id);
+      setGameId(id);
+      setIsActiveGame(true);
     };
 
   const resetGame = () => {
@@ -112,7 +130,11 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
     setFen(chessRef.current.fen());
     setSelected(null);
     setLegalMoves([]);
-  };
+    };
+
+    const resign = () => {
+        connectionRef.current?.invoke("EndGame", gameId, playerColor === 'w' ? 'b' : 'w')
+    }
 
   return (
     <ChessGameContext.Provider // TODO review what to pass
@@ -122,7 +144,8 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
         turn,
         selected,
         legalMoves,
-        selectSquare,
+              selectSquare,
+        deselectSquare,
         makeMove,
         resetGame,
         gameId,
@@ -135,7 +158,9 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
         takenPieces,
         chessRef,
               promotionMove,
-        moveHistory
+              moveHistory,
+              resign,
+        setIsActiveGame
       }}
     >
       {children}

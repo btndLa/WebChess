@@ -3,7 +3,7 @@ import { HttpError } from "@/api/errors/HttpError";
 import { ProblemDetails } from "@/api/models/ProblemDetails";
 import { ServerSideValidationError } from "@/api/errors/ServerSideValidationError";
 
-export async function get<TResponse>(url: string, params?: Record<string, string>): Promise<TResponse> {
+export async function get<TResponse> (url: string, params ?: Record<string, string>): Promise < TResponse | null> {
     let fullUrl = `${import.meta.env.VITE_APP_API_BASEURL}/${url}`;
     if (params) {
         const queryString = new URLSearchParams(params).toString();
@@ -16,7 +16,12 @@ export async function get<TResponse>(url: string, params?: Record<string, string
     });
     await throwErrorIfNotOk(res);
 
-    return await res.json();
+    const text = await res.text();
+    if (text) {
+        return JSON.parse(text);
+    }
+
+    return null;
 }
 
 export async function postAsJson<TRequest, TResponse>(url: string, body?: TRequest): Promise<TResponse> {

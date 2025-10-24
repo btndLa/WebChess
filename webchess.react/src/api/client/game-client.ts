@@ -7,6 +7,10 @@ export async function getGame(id: string): Promise<GameResponseDto> {
     return await get<GameResponseDto>(`game/${id}`);
 }
 
+export async function getActiveGame(): Promise<GameResponseDto | null> {
+    return await get<GameResponseDto | null>("game/active");
+}
+
 export async function createGame(): Promise<GameResponseDto> {
     return await postAsJson<undefined, GameResponseDto>("game/create"); // TODO might need to adjust return types
 }
@@ -23,6 +27,6 @@ export function initSignalRConnection(): HubConnection {
     return connection;
 }
 
-export async function endGame(gameId: string) : Promise<void> {
-    return await postAsJsonWithoutResponse<{ gameId: string }>("game/end", { gameId }); //TODO error here
+export async function endGame(gameId: string, winner: string) : Promise<void> {
+    return await postAsJsonWithoutResponse<{ gameId: string, winner: string }>("game/end", { gameId, winner }); //TODO maybe add DTO here
 }

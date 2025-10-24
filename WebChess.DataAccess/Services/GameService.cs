@@ -78,7 +78,10 @@ namespace WebChess.DataAccess.Services {
                     Id = g.Id,
                     WhitePlayerId = g.WhitePlayerId,
                     BlackPlayerId = g.BlackPlayerId,
-                    Fen = g.Fen
+                    Fen = g.Fen,
+                    MoveHistory = g.MoveHistory,
+                    TakenPieces = g.TakenPieces,
+                    Status = g.Status
                 })
                 .FirstOrDefaultAsync();
 
@@ -106,8 +109,6 @@ namespace WebChess.DataAccess.Services {
 				game.TakenPieces = takenPiecesList.ToArray();
 			}
 			var moveHistoryList = new List<string>(game.MoveHistory);
-            Console.WriteLine(san); //TODO fix this, hte convert works, but still stroes it in json encode, not even sure if it is  aproblem
-            Console.WriteLine(Regex.Unescape(san));
             moveHistoryList.Add(Regex.Unescape(san));
             game.MoveHistory = moveHistoryList.ToArray();
 			chessGame.MakeMove(move, true);
@@ -117,11 +118,21 @@ namespace WebChess.DataAccess.Services {
             return (true, game.Fen, null);
         }
 
-		public async Task<Game?> EndGameAsync(string gameId) {
+		public async Task<Game?> EndGameAsync(string gameId, string winner) {
 			var game = await _context.Games.FindAsync(new Guid(gameId));
 			if (game == null) return null;
-            game.Status = "ended";
+            if (game.Status == "active") {
+                game.Status = winner == "w" ? "1-0" : "0-1";
+            }
 			await _context.SaveChangesAsync();
+			return game;
+		}
+
+        public async Task<Game?> GetActiveGame(string userId) {
+			var game = await _context.Games
+	        .Where(g => (g.WhitePlayerId == userId || g.BlackPlayerId == userId) && g.Status == "active")
+	        .FirstOrDefaultAsync();
+
 			return game;
 		}
 	}

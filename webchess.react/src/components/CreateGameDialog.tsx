@@ -23,7 +23,7 @@ export const CreateGameDialog: React.FC<{
   const [waiting, setWaiting] = useState(false);
   const [opponentJoined, setOpponentJoined] = useState(false);
     const navigate = useNavigate();
-    const { gameId, joinGame, loadGame, connectionRef } = useChessGameContext();
+    const { gameId, joinGame, loadGame, connectionRef, setIsActiveGame } = useChessGameContext();
 
   const handleCreate = async () => {
     setLoading(true);
@@ -34,10 +34,13 @@ export const CreateGameDialog: React.FC<{
           await joinGame(gameData.id);
           loadGame(gameData);
           connectionRef.current?.on("PlayerJoined", () => {
-              setOpponentJoined(true);
-              setWaiting(false);
-              onClose();
-              navigate(`/game/${gameData.id}`);
+              if(gameData.status == "waiting"){
+                  setOpponentJoined(true);
+                  setWaiting(false);
+                  onClose();
+                  navigate(`/game/${gameData.id}`);
+                  setIsActiveGame(true);
+              }
           });
       setWaiting(true);
     } catch (e) {

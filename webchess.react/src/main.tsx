@@ -6,8 +6,6 @@ import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import GamePage from './pages/GamePage'
-import { UserContextProvider } from './contexts/UserContextProvider'
-import { ChessGameContextProvider } from './contexts/ChessGameContextProvider'
 
 const router = createBrowserRouter([
     {
@@ -35,12 +33,8 @@ const router = createBrowserRouter([
                 
 
 createRoot(document.getElementById('root')!).render(
-    <UserContextProvider>
-        <ChessGameContextProvider>
-            <StrictMode>
-                <RouterProvider router={router} />
-            </StrictMode>,
-        </ChessGameContextProvider>
-    </UserContextProvider>
+    <StrictMode>
+        <RouterProvider router={router} />
+    </StrictMode>
 
 )

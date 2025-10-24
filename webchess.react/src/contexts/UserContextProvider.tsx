@@ -5,12 +5,15 @@ import { getJwtExpiration } from "@/utils/jwt";
 import { login, logout, refresh } from "@/api/client/users-client";
 import { HttpError } from "@/api/errors/HttpError";
 import { LoginRequestDto } from "@/api/models/LoginRequestDto";
+import { getActiveGame } from "../api/client/game-client";
+import { useNavigate } from "react-router-dom";
 
 export function UserContextProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<UserInfo | null>(null);
     const [authError, setAuthError] = useState<string| null>(null);
     const [initialized, setInitialized] = useState<boolean>(false);
     const loggedIn = user !== null;
+    const navigate = useNavigate();
 
     const handleLoginResponse = useCallback((response: LoginResponseDto) => {
         const user: UserInfo = {
@@ -87,6 +90,27 @@ export function UserContextProvider({ children }: { children: ReactNode }) {
 
         return () => clearTimeout(timeoutId);
     }, [user, redeemToken]);
+
+    useEffect(() => {
+        if (initialized && loggedIn) {
+            if (location.pathname.startsWith('/game/')) {
+                return;
+            }
+
+            const checkForActiveGame = async () => {
+                try {
+                    const activeGame = await getActiveGame();
+                    if (activeGame) {
+                        navigate(`/game/${activeGame.id}`);
+                    }
+                } catch (error) {
+                    console.error("Failed to check for active game:", error);
+                }
+            };
+
+            checkForActiveGame();
+        }
+    }, [initialized, loggedIn, navigate, location.pathname]);
 
     const contextValue: UserContextModel = {
         userId: user ? user.userId : null,

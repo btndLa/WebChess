@@ -22,7 +22,7 @@ namespace WebChess.WebApi.SignalR.Hubs {
 			}
 
 			await Clients.GroupExcept(gameId, Context.ConnectionId)
-				.SendAsync("MoveReceived", from, to, promotion, newFen);
+				.SendAsync("MoveReceived", from, to, promotion, newFen); //TODO [2025-10-24T16:14:23.995Z] Error: A callback for the method 'movereceived' threw error 'Error: Invalid move: {"from":"e2","to":"e4","promotion":null}'.
 		}
 
 
@@ -31,8 +31,8 @@ namespace WebChess.WebApi.SignalR.Hubs {
 			await _hubService.JoinGameAsync(Context.ConnectionId, gameId);
 		}
 
-		public async Task EndGame(string gameId) { //TODO namings
-			await Clients.Group(gameId).SendAsync("GameOver");
+		public async Task EndGame(string gameId, string winner) { //TODO namings
+			await Clients.Group(gameId).SendAsync("GameOver", winner);
 			await Groups.RemoveFromGroupAsync(Context.ConnectionId, gameId);
 		}
 	}

@@ -1,4 +1,4 @@
-﻿import { useEffect, useState} from "react";
+﻿import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import ChessBoard from "@/components/ChessBoard";
 import { getGame } from "@/api/client/game-client";
@@ -8,19 +8,31 @@ import { PIECE_UNICODE } from "@/utils/pieces";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import MoveHistoryTable from "../components/MoveHistoryTable";
+import { Button, Typography } from "@mui/material";
+import { ResignDialog } from "../components/ResignDialog";
 
 const GamePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [game, setGame] = useState<GameResponseDto | null>(null); // I mught not need this
-  const [loading, setLoading] = useState(true);
-  const { chessRef, takenPieces, playerColor } = useChessGameContext();
+  const [game, setGame] = useState<GameResponseDto | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [open, setOpen] = useState(false);
+    const { joinGame, gameId, chessRef, takenPieces, playerColor, resign, loadGame} = useChessGameContext();
 
   useEffect(() => {
     if (!id) return;
     setLoading(true);
     getGame(id)
-      .then(setGame)
+        .then((fetchedGame) => {
+            if (!gameId) {
+                loadGame(fetchedGame);
+                if (fetchedGame.status == "active" || fetchedGame.status == "waiting") {
+                    joinGame(fetchedGame.id);
+                    loadGame(fetchedGame);
+                }
+            }
+            setGame(fetchedGame);
+        })
       .catch((err) => {
         if (err.message === "Forbidden") {
           navigate("/unauthorized");
@@ -34,8 +46,18 @@ const GamePage: React.FC = () => {
   }, [id, navigate]);
 
   if (loading) return <div>Loading...</div>;
-  if (!game) return null;
+    if (!game) return null;
 
+    const handleOpenResignDialog = () => {
+        setOpen(true);
+    }
+    const handleCloseResignDialog = () => {
+        setOpen(false);
+    }
+    const handleResign = () => {
+        resign();
+        setOpen(false);
+    }
   const playerPieces = takenPieces.filter(
     (piece) =>
       (playerColor === "w" && piece === piece.toUpperCase()) ||
@@ -52,7 +74,7 @@ const GamePage: React.FC = () => {
   let statusMessage = "";
   let severity: "info" | "warning" | "success" | "error" = "info";
 
-    if (chessRef.current.isCheckmate()) {
+  if (chessRef.current.isCheckmate()) {
     statusMessage = `Checkmate! ${chessRef.current.turn() === "w" ? "Black" : "White"} wins.`;
     severity = "error";
   } else if (chessRef.current.isStalemate()) {
@@ -68,33 +90,47 @@ const GamePage: React.FC = () => {
     statusMessage = `${chessRef.current.turn() === "w" ? "White" : "Black"}'s turn.`;
     severity = "info";
     }
-  
-
+  //TODO add feedback on game end
   return (
-    <div
-      style={{
+    <Box
+      sx={{
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         marginTop: "2rem",
+        gap: 2,
       }}
     >
-      <Box sx={{ width: "100%", mb: 2 }}>
+      <Box sx={{ width: "80%", maxWidth: '900px', mb: 2 }}>
         <Alert severity={severity}>{statusMessage}</Alert>
       </Box>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0, alignItems: 'flex-start' }}>
-        {playerPieces.map((p) => PIECE_UNICODE[p]).join(" ")}
-        <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2, alignItems: 'stretch' }}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-                <ChessBoard />
-            </Box>
-            <Box sx={{ width: '300px', minHeight: '384px' }}>
-                <MoveHistoryTable />
-            </Box>
+
+      <Box sx={{ display: 'flex', flexDirection: 'row', gap: 4, alignItems: 'stretch' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'left', justifyContent: 'space-between' }}>
+          <Typography variant="h6" sx={{ minHeight: '32px', fontFamily: 'monospace', pl: '24px' }}>
+            {opponentPieces.map((p) => PIECE_UNICODE[p]).join("")}
+          </Typography>
+          <ChessBoard />
+          <Typography variant="h6" sx={{ minHeight: '32px', fontFamily: 'monospace', pl: '24px' }}>
+            {playerPieces.map((p) => PIECE_UNICODE[p]).join("")}
+          </Typography>
         </Box>
-        {opponentPieces.map((p) => PIECE_UNICODE[p]).join(" ")}
+
+              <Box sx={{ width: '300px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <MoveHistoryTable />
+                  <Button variant="contained" color="error" onClick={()=> handleOpenResignDialog()}
+                    sx={{
+                        mt: 2,
+                        fontWeight: 'bold',
+                        width: '70%',
+                        fontFamily: ''
+                      }}
+                  >Resign
+                  </Button>
+                  <ResignDialog open={open} handleResign={handleResign} onClose={handleCloseResignDialog} />
+        </Box>
       </Box>
-    </div>
+    </Box>
   );
 };
 

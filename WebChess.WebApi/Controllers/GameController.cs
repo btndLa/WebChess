@@ -65,13 +65,29 @@ namespace WebChess.WebApi.Controllers {
 			return Ok(gameDto);
 		}
 
+		[HttpGet("active")]
+		[Authorize]
+		public async Task<IActionResult> GetActiveGame() {
+			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+			if (userId == null) return Unauthorized();
+
+			var game = await _gameService.GetActiveGame(userId);
+			if (game == null) {
+				return Ok(null);
+			}
+
+			var gameDto = _mapper.Map<GameResponseDto>(game);
+			gameDto.PlayerColor = game.WhitePlayerId == userId ? "w" : "b";
+			return Ok(gameDto);
+		}
+
 		[HttpPost("end")]
 		[Authorize]
 		public async Task<IActionResult> EndGame([FromBody] EndGameRequestDto request)
 		{
 			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 			if (userId == null) return Unauthorized();
-			var game = await _gameService.EndGameAsync(request.GameId);
+			var game = await _gameService.EndGameAsync(request.GameId, request.Winner);
 			if (game == null) return NotFound("Game not found");
 
 			var gameDto = _mapper.Map<GameResponseDto>(game);

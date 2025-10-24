@@ -11,6 +11,7 @@ export interface ChessGameContextType {
   selected: Square | null;
   legalMoves: Square[];
   selectSquare: (square: Square) => void;
+    deselectSquare: () => void; //TODO maybe error
   makeMove: (from: Square, to: Square, promotion?: string) => void;
   resetGame: () => void;
   gameId: string | null;
@@ -24,6 +25,8 @@ export interface ChessGameContextType {
     chessRef: React.RefObject<Chess | null>;
     promotionMove: { from: Square; to: Square } | null;
     moveHistory: string[];
+    resign: () => void;
+    setIsActiveGame: (isActive: boolean) => void;
 }
 
 export const ChessGameContext = createContext<ChessGameContextType | undefined>(undefined);

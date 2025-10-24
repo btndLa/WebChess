@@ -5,6 +5,7 @@ export interface GameResponseDto
     blackPlayerId: string
     playerColor: 'w' | 'b'
     fen: string
-    takenPiecesWhite: string[]
+    takenPieces: string[]
     moveHistory: string[]
+    status: string
 }
