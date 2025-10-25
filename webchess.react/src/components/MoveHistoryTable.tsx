@@ -4,6 +4,7 @@ import { useChessGameContext } from "../contexts/ChessGameContext";
 export default function MoveHistoryTable() {
     const { moveHistory } = useChessGameContext();
 
+
     const movePairs: { moveNumber: number; white: string; black: string }[] = [];
     for (let i = 0; i < moveHistory.length; i += 2) {
         movePairs.push({
@@ -12,7 +13,6 @@ export default function MoveHistoryTable() {
             black: moveHistory[i + 1] || "", 
         });
     }
-
     return (
         <Paper sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
             <TableContainer sx={{ flexGrow: 1, overflow: 'auto' }}>

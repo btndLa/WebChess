@@ -31,7 +31,7 @@ const GamePage: React.FC = () => {
                     loadGame(fetchedGame);
                 }
             }
-            setGame(fetchedGame);
+            setGame(fetchedGame); // TODO load game only if user was one of the players
         })
       .catch((err) => {
         if (err.message === "Forbidden") {

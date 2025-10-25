@@ -33,8 +33,6 @@ export const JoinGameDialog: React.FC<{
         },
         body: JSON.stringify({ gameId: gameCode })
         });
-        console.log(res);
-
       if (!res.ok) throw new Error("Invalid or unavailable game code");
         const data = await res.json();
         setPlayerColor(data.playerColor);

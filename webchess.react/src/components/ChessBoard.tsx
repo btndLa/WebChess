@@ -81,8 +81,6 @@ const ChessBoard: React.FC = () => {
                                     typeof cell === "object" &&
                                     cell.color === turn && playerColor === turn
                                 ) {
-                                    console.log("cell")
-
                                     selectSquare(square);
                                 }
                         }}
