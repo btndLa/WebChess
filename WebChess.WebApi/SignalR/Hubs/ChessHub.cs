@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Connections.Features;
 using Microsoft.AspNetCore.SignalR;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using WebChess.DataAccess.Services;
 using WebChess.WebApi.SignalR.Services;
@@ -8,6 +9,8 @@ namespace WebChess.WebApi.SignalR.Hubs {
 	public class ChessHub : Hub {
 		private readonly IChessHubService _hubService;
 		private readonly IGameService _gameService;
+		private static readonly ConcurrentDictionary<string, HashSet<string>> _groupMembers = new();
+		//TODO set loglevel
 
 		public ChessHub(IChessHubService hubService, IGameService gameService) {
 			_hubService = hubService;
@@ -22,13 +25,26 @@ namespace WebChess.WebApi.SignalR.Hubs {
 			}
 
 			await Clients.GroupExcept(gameId, Context.ConnectionId)
-				.SendAsync("MoveReceived", from, to, promotion, newFen); //TODO [2025-10-24T16:14:23.995Z] Error: A callback for the method 'movereceived' threw error 'Error: Invalid move: {"from":"e2","to":"e4","promotion":null}'.
+				.SendAsync("MoveReceived", from, to, promotion, newFen); 
 		}
 
 
-		public async Task JoinGameGroup(string gameId)
-		{
-			await _hubService.JoinGameAsync(Context.ConnectionId, gameId);
+		public async Task JoinGameGroup(string gameId) {
+			await Groups.AddToGroupAsync(Context.ConnectionId, gameId);
+			_groupMembers.AddOrUpdate(
+			   gameId,
+			   new HashSet<string> { Context.ConnectionId },
+			   (key, existingSet) => {
+				   existingSet.Add(Context.ConnectionId);
+				   return existingSet;
+			   });
+
+			// Log current members
+			Console.WriteLine($"Connection {Context.ConnectionId} joined group {gameId}");
+			Console.WriteLine($"Current members in group {gameId}: {string.Join(", ", _groupMembers[gameId])}");
+
+			await Clients.GroupExcept(gameId, Context.ConnectionId)
+				.SendAsync("PlayerJoined");
 		}
 
 		public async Task EndGame(string gameId, string winner) { //TODO namings

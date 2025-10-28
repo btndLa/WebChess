@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+﻿import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import ChessBoard from "@/components/ChessBoard";
 import { getGame } from "@/api/client/game-client";
@@ -18,17 +18,19 @@ const GamePage: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [open, setOpen] = useState(false);
     const { joinGame, gameId, chessRef, takenPieces, playerColor, resign, loadGame} = useChessGameContext();
+    const initializedRef = useRef(false);
 
-  useEffect(() => {
-    if (!id) return;
+    useEffect(() => {
+    if (!id || initializedRef.current) return;
+    initializedRef.current = true;
     setLoading(true);
     getGame(id)
         .then((fetchedGame) => {
             if (!gameId) {
                 loadGame(fetchedGame);
                 if (fetchedGame.status == "active" || fetchedGame.status == "waiting") {
+
                     joinGame(fetchedGame.id);
-                    loadGame(fetchedGame);
                 }
             }
             setGame(fetchedGame); // TODO load game only if user was one of the players
@@ -43,7 +45,7 @@ const GamePage: React.FC = () => {
         }
       })
       .finally(() => setLoading(false));
-  }, [id, navigate]);
+  }, [id, gameId, navigate, loadGame, joinGame]);
 
   if (loading) return <div>Loading...</div>;
     if (!game) return null;

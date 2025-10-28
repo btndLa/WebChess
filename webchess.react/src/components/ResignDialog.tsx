@@ -6,7 +6,7 @@ export interface ResignDialogProps {
     onClose: () => void;
 }
 
-export function ResignDialog(props: ResignDialogProps) {
+export function ResignDialog(props: ResignDialogProps) {//TODO onlyshow if game is active
     const { onClose, open, handleResign } = props;
 
     return (

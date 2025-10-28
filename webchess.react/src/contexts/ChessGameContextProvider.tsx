@@ -6,7 +6,6 @@ import { endGame, initSignalRConnection } from "../api/client/game-client";
 import { useUserContext } from "./UserContext";
 import { GameResponseDto } from "../api/models/GameResponseDto";
 
-// Utility function to parse FEN to 2D array
 
 //TODO transfer to always update and receive from backend
 
@@ -110,7 +109,7 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
         setMoveHistory(gameData.moveHistory);
     };
 
-  const joinGame = async (id: string) => {
+    const joinGame = async (id: string) => {
     const conn = initSignalRConnection();
       conn.on("MoveReceived", handleMoveReceived);
       conn.on("GameOver", (winner) => {

@@ -9,11 +9,6 @@ namespace WebChess.WebApi.SignalR.Services {
 		public ChessHubService(IHubContext<ChessHub> hubContext) {
 			_hubContext = hubContext;
 		}
-
-		public async Task JoinGameAsync(string connectionId, string gameId) {
-			await _hubContext.Groups.AddToGroupAsync(connectionId, gameId);
-			await _hubContext.Clients.GroupExcept(gameId, connectionId).SendAsync("PlayerJoined", connectionId);
-		}
 	}
 }
 	
