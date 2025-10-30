@@ -90,7 +90,6 @@ namespace WebChess.DataAccess.Services {
 
         public async Task<(bool Success, string? NewFen, string? Error)> ApplyMoveAsync(Guid gameId, string from, string to, string san, char? promotion)
         {
-            Console.WriteLine("san", san);
             var game = await _context.Games.FindAsync(gameId);
             if (game == null) return (false, null, "Game not found");
 

@@ -7,11 +7,8 @@ export function RootLayout(){
     return (
         <UserContextProvider>
             <ChessGameContextProvider>
-                <div className="root-layout">
                     {/* Header */}
-                    <header>
                             <HeaderBar></HeaderBar>
-                    </header>
                     {/* Main Content */}
                     <main>
                     <Outlet />
@@ -20,7 +17,6 @@ export function RootLayout(){
                     <footer>
                     <span>&copy; {new Date().getFullYear()} WebChess</span>
                     </footer>
-                </div>
             </ChessGameContextProvider>
         </UserContextProvider>
   );

@@ -9,14 +9,14 @@ import { useUserContext } from '../contexts/UserContext';
 import { CreateGameDialog } from './CreateGameDialog';
 import { JoinGameDialog } from './JoinGameDialog';
 
-const HeaderBar: React.FC = () => {
+const HeaderBar: React.FC = () => { // TODO change these
   const navigate = useNavigate();
   const { loggedIn } = useUserContext();
   const [createOpen, setCreateOpen] = useState(false);
   const [joinOpen, setJoinOpen] = useState(false);
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+      <>
       <AppBar position="static">
         <Toolbar>
           <Typography
@@ -24,7 +24,7 @@ const HeaderBar: React.FC = () => {
             component="div"
             onClick={() => navigate('/')}
             sx={{
-              flexGrow: 1, // This makes the Typography element expand, pushing other items to the right.
+              flexGrow: 1,
               cursor: 'pointer'
             }}
           >
@@ -53,7 +53,7 @@ const HeaderBar: React.FC = () => {
       </AppBar>
       <CreateGameDialog open={createOpen} onClose={() => setCreateOpen(false)} />
       <JoinGameDialog open={joinOpen} onClose={() => setJoinOpen(false)} />
-    </Box>
+    </>
   );
 };
 

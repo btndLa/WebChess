@@ -32,8 +32,7 @@ export const CreateGameDialog: React.FC<{
           const gameData = await createGame(); // TODO sometimes code stays the same after game
           await joinGame(gameData.id);
           loadGame(gameData);
-          connectionRef.current?.on("PlayerJoined", () => {// TODO Warning: No client method with the name 'playerjoined' found. when reconnecting 
-              console.log("Opponent joined detected");
+          connectionRef.current?.on("PlayerJoined", () => {// TODO Move this to the provider
               if (gameData.status == "waiting") {
                   setOpponentJoined(true);
                   setWaiting(false);

@@ -1,4 +1,4 @@
 ﻿namespace WebChess.WebApi.SignalR.Services {
 	public interface IChessHubService {
-	}//TODO might not need this
+	}//000TODO might not need this
 }

@@ -38,11 +38,6 @@ namespace WebChess.WebApi.SignalR.Hubs {
 				   existingSet.Add(Context.ConnectionId);
 				   return existingSet;
 			   });
-
-			// Log current members
-			Console.WriteLine($"Connection {Context.ConnectionId} joined group {gameId}");
-			Console.WriteLine($"Current members in group {gameId}: {string.Join(", ", _groupMembers[gameId])}");
-
 			await Clients.GroupExcept(gameId, Context.ConnectionId)
 				.SendAsync("PlayerJoined");
 		}

@@ -26,6 +26,7 @@ export interface ChessGameContextType {
     promotionMove: { from: Square; to: Square } | null;
     moveHistory: string[];
     resign: () => void;
+    isActiveGame: boolean;
     setIsActiveGame: (isActive: boolean) => void;
 }
 

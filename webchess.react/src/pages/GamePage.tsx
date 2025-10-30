@@ -10,6 +10,7 @@ import Box from "@mui/material/Box";
 import MoveHistoryTable from "../components/MoveHistoryTable";
 import { Button, Typography } from "@mui/material";
 import { ResignDialog } from "../components/ResignDialog";
+import { GameOverDialog } from "../components/GameOverDialog";
 
 const GamePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -17,7 +18,8 @@ const GamePage: React.FC = () => {
   const [game, setGame] = useState<GameResponseDto | null>(null);
     const [loading, setLoading] = useState(true);
     const [open, setOpen] = useState(false);
-    const { joinGame, gameId, chessRef, takenPieces, playerColor, resign, loadGame} = useChessGameContext();
+    const [gameOverOpen, setGameOverOpen] = useState(false);
+    const { joinGame, gameId, chessRef, takenPieces, playerColor, resign, loadGame, isActiveGame } = useChessGameContext();
     const initializedRef = useRef(false);
 
     useEffect(() => {
@@ -45,7 +47,15 @@ const GamePage: React.FC = () => {
         }
       })
       .finally(() => setLoading(false));
-  }, [id, gameId, navigate, loadGame, joinGame]);
+    }, [id, gameId, navigate, loadGame, joinGame]);
+
+    const wasActiveRef = useRef(isActiveGame);
+    useEffect(() => {
+        if (wasActiveRef.current && !isActiveGame) {
+            setGameOverOpen(true);
+        }
+        wasActiveRef.current = isActiveGame;
+    }, [isActiveGame]);
 
   if (loading) return <div>Loading...</div>;
     if (!game) return null;
@@ -72,7 +82,6 @@ const GamePage: React.FC = () => {
       (playerColor === "b" && piece === piece.toUpperCase())
   );
 
-  // Determine status message
   let statusMessage = "";
   let severity: "info" | "warning" | "success" | "error" = "info";
 
@@ -90,9 +99,9 @@ const GamePage: React.FC = () => {
     severity = "warning";
   } else {
     statusMessage = `${chessRef.current.turn() === "w" ? "White" : "Black"}'s turn.`;
-    severity = "info";
-    }
-  //TODO add feedback on game end
+      severity = "info";
+
+   }
   return (
     <Box
       sx={{
@@ -101,11 +110,11 @@ const GamePage: React.FC = () => {
         alignItems: "center",
         marginTop: "2rem",
         gap: 2,
-      }}
-    >
+          }}
+      >{isActiveGame &&
       <Box sx={{ width: "80%", maxWidth: '900px', mb: 2 }}>
         <Alert severity={severity}>{statusMessage}</Alert>
-      </Box>
+      </Box>}
 
       <Box sx={{ display: 'flex', flexDirection: 'row', gap: 4, alignItems: 'stretch' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'left', justifyContent: 'space-between' }}>
@@ -120,7 +129,7 @@ const GamePage: React.FC = () => {
 
               <Box sx={{ width: '300px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                   <MoveHistoryTable />
-                  <Button variant="contained" color="error" onClick={()=> handleOpenResignDialog()}
+                  {isActiveGame &&  < Button variant="contained" color="error" onClick={() => handleOpenResignDialog()}
                     sx={{
                         mt: 2,
                         fontWeight: 'bold',
@@ -128,8 +137,13 @@ const GamePage: React.FC = () => {
                         fontFamily: ''
                       }}
                   >Resign
-                  </Button>
+                  </Button>}
                   <ResignDialog open={open} handleResign={handleResign} onClose={handleCloseResignDialog} />
+                  <GameOverDialog
+                      open={gameOverOpen}
+                      winner="white" //TODO extend info in gameover dialog
+                      onClose={() => setGameOverOpen(false)}
+                  />
         </Box>
       </Box>
     </Box>

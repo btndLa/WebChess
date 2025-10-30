@@ -51,7 +51,6 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
     }
   };
     const handleMoveReceived = (from: string, to: string, promotion?: string, newFen?: string) => {
-        console.log(chessRef.current.board())
         const finalFen = newFen === undefined ? promotion : newFen;
         if (!finalFen) return;
 
@@ -68,7 +67,6 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
         if (move) {
             setMoveHistory(prev => [...prev, move.san]);
         }
-
         setSelected(null);
         setLegalMoves([]);
     };
@@ -110,7 +108,10 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
     };
 
     const joinGame = async (id: string) => {
-    const conn = initSignalRConnection();
+        const conn = initSignalRConnection();
+        conn.on("PlayerJoined", () => {
+            console.log("Player reconnected");
+        })
       conn.on("MoveReceived", handleMoveReceived);
       conn.on("GameOver", (winner) => {
           endGame(id, winner);
@@ -132,6 +133,7 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
 
     const resign = () => {
         connectionRef.current?.invoke("EndGame", gameId, playerColor === 'w' ? 'b' : 'w')
+        setIsActiveGame(false);
     }
 
   return (
@@ -158,6 +160,7 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
               promotionMove,
               moveHistory,
               resign,
+              isActiveGame,
         setIsActiveGame
       }}
     >
