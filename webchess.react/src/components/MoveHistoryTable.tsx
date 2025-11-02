@@ -15,7 +15,6 @@ export default function MoveHistoryTable() {
         });
     }
     
-    // Auto-scroll to bottom when new moves are added
     useEffect(() => {
         if (tableContainerRef.current) {
             tableContainerRef.current.scrollTop = tableContainerRef.current.scrollHeight;
@@ -23,7 +22,7 @@ export default function MoveHistoryTable() {
     }, [moveHistory]);
     
     return (
-        <Paper sx={{ width: '100%', maxHeight: '400px', display: 'flex', flexDirection: 'column' }}>
+        <Paper sx={{ width: '100%', height: '100%', maxHeight: '400px', display: 'flex', flexDirection: 'column' }}>
             <TableContainer 
                 ref={tableContainerRef}
                 sx={{ maxHeight: '400px', overflow: 'auto' }}

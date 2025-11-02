@@ -121,7 +121,13 @@ namespace WebChess.DataAccess.Services {
 			var game = await _context.Games.FindAsync(new Guid(gameId));
 			if (game == null) return null;
             if (game.Status == "active") {
-                game.Status = winner == "w" ? "1-0" : "0-1";
+                game.Status = winner switch
+                {
+                    "w" => "1-0",
+                    "b" => "0-1",
+                    "draw" => "1/2-1/2",
+                    _ => game.Status
+                };
             }
 			await _context.SaveChangesAsync();
 			return game;

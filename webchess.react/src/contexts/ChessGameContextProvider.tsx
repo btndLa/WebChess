@@ -23,6 +23,8 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
     const [moveHistory, setMoveHistory] = useState<string[]>([]);
     const [promotionMove, setPromotionMove] = useState<{ from: Square; to: Square } | null>(null);
     const [isActiveGame, setIsActiveGame] = useState<boolean>(false)
+    const [gameResult, setGameResult] = useState<string | null>(null);
+
 
 
   const turn = chessRef.current.turn() as "w" | "b";
@@ -88,7 +90,11 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
         }
         setFen(chessRef.current.fen());
         if (chessRef.current.isGameOver()) {
+            if (chessRef.current.isDraw()) {
+                connectionRef.current?.invoke("EndGame", gameId, "draw")
+            } else {
             connectionRef.current?.invoke("EndGame", gameId, playerColor)
+            }
         }
         setSelected(null);
         setLegalMoves([]);
@@ -116,6 +122,7 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
       conn.on("GameOver", (winner) => {
           endGame(id, winner);
           setIsActiveGame(false);
+          setGameResult(winner);
       });
     await conn.start();
     await conn.invoke("JoinGameGroup", id); //TODO WHen joining to exisitng game, getting a warning
@@ -161,7 +168,8 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
               moveHistory,
               resign,
               isActiveGame,
-        setIsActiveGame
+              setIsActiveGame,
+              gameResult,
       }}
     >
       {children}

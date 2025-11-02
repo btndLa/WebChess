@@ -1,7 +1,7 @@
 ﻿import React from "react";
 import { useChessGameContext } from "../contexts/ChessGameContext";
 import { Square } from "chess.js";
-import { PIECE_UNICODE } from "@/utils/pieces";
+import { PIECE_IMAGES } from "@/utils/pieces";
 import { PromotionDialog } from "./PromotionDialog";
 import { Box, Typography } from "@mui/material";
 
@@ -14,19 +14,48 @@ const ChessBoard: React.FC = () => {
     turn,
     selected,
     legalMoves,
-      selectSquare,
-      deselectSquare,
+    selectSquare,
+    deselectSquare,
     makeMove,
     playerColor
   } = useChessGameContext();
 
-  function getPieceSymbol(cell: any): string {
-    if (!cell) return "";
+  function getPieceImage(cell: any): JSX.Element | null {
+    if (!cell) return null;
+    
+    let key: string;
     if (typeof cell === "object" && cell.type && cell.color) {
-      const key = cell.color === "w" ? cell.type.toUpperCase() : cell.type.toLowerCase();
-      return PIECE_UNICODE[key] || "";
+      key = cell.color === "w" ? cell.type.toUpperCase() : cell.type.toLowerCase();
+    } else {
+      key = cell;
     }
-    return PIECE_UNICODE[cell] || "";
+
+    const imageSrc = PIECE_IMAGES[key];
+    if (!imageSrc) return null;
+
+    const pieceNames: Record<string, string> = {
+      'K': 'White King', 'Q': 'White Queen', 'R': 'White Rook',
+      'B': 'White Bishop', 'N': 'White Knight', 'P': 'White Pawn',
+      'k': 'Black King', 'q': 'Black Queen', 'r': 'Black Rook',
+      'b': 'Black Bishop', 'n': 'Black Knight', 'p': 'Black Pawn',
+    };
+
+    return (
+      <img 
+        src={imageSrc} 
+        alt={pieceNames[key] || 'Chess piece'}
+        style={{ 
+          width: '80%', 
+          height: '80%',
+          pointerEvents: 'none',
+          userSelect: 'none',
+          filter: 'drop-shadow(0 2px 1px rgba(0, 0, 0, 0.4))',
+          position: 'relative',
+          top: '4px'
+        }}
+        draggable={false}
+      />
+    );
   }
 
   const displayBoard = playerColor === "b" ? board.slice().reverse().map(row => row.slice().reverse()) : board;
@@ -61,49 +90,51 @@ const ChessBoard: React.FC = () => {
             {displayBoard.map((row, rowIdx) => (
               <tr key={rowIdx}>
                 {row.map((cell, colIdx) => {
-                    const file = files[playerColor === "b" ? 7 - colIdx : colIdx];
-                    const rank = playerColor === "b" ? rowIdx + 1 : 8 - rowIdx;
-                    const square = `${file}${rank}` as Square;
-                    const isSelected = selected === square;
-                    const isLegal = legalMoves.includes(square);
-                    const isDark = (rowIdx + colIdx) % 2 === 1;
+                  const file = files[playerColor === "b" ? 7 - colIdx : colIdx];
+                  const rank = playerColor === "b" ? rowIdx + 1 : 8 - rowIdx;
+                  const square = `${file}${rank}` as Square;
+                  const isSelected = selected === square;
+                  const isLegal = legalMoves.includes(square);
+                  const isDark = (rowIdx + colIdx) % 2 === 1;
 
-                    return (
-                      <td
-                        key={colIdx} onClick={() => {
-                                if (selected === square) {
-                                    deselectSquare();
-                                } else if (selected && isLegal) {
-                                    makeMove(selected, square);
-                                }
-                                else if (
-                                    cell &&
-                                    typeof cell === "object" &&
-                                    cell.color === turn && playerColor === turn
-                                ) {
-                                    selectSquare(square);
-                                }
-                        }}
-                        style={{
-                          width: 48,
-                          height: 48,
-                          backgroundColor: isSelected
-                            ? "#f6f669"
-                            : isLegal
-                            ? "#baca44"
-                            : isDark
-                            ? "#769656"
-                            : "#eeeed2",
-                          border: "1px solid #333",
-                          textAlign: "center",
-                          fontSize: 32,
-                          cursor: "pointer",
-                          userSelect: "none",
-                        }}
-                      >
-                        {getPieceSymbol(cell)}
-                      </td>
-                    );
+                  return (
+                    <td
+                      key={colIdx} 
+                      onClick={() => {
+                        if (selected === square) {
+                          deselectSquare();
+                        } else if (selected && isLegal) {
+                          makeMove(selected, square);
+                        } else if (
+                          cell &&
+                          typeof cell === "object" &&
+                          cell.color === turn && 
+                          playerColor === turn
+                        ) {
+                          selectSquare(square);
+                        }
+                      }}
+                      style={{
+                        width: 64,
+                        height: 64,
+                        backgroundColor: isSelected
+                          ? "#f6f669"
+                          : isLegal
+                          ? "#baca44"
+                          : isDark
+                          ? "#769656"
+                          : "#eeeed2",
+                        border: "1px solid #333",
+                        textAlign: "center",
+                        verticalAlign: "middle",
+                        cursor: "pointer",
+                        userSelect: "none",
+                        position: "relative"
+                      }}
+                    >
+                      {getPieceImage(cell)}
+                    </td>
+                  );
                 })}
               </tr>
             ))}

@@ -28,6 +28,7 @@ export interface ChessGameContextType {
     resign: () => void;
     isActiveGame: boolean;
     setIsActiveGame: (isActive: boolean) => void;
+    gameResult: string | null;
 }
 
 export const ChessGameContext = createContext<ChessGameContextType | undefined>(undefined);

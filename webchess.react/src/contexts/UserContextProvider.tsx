@@ -18,6 +18,7 @@ export function UserContextProvider({ children }: { children: ReactNode }) {
     const handleLoginResponse = useCallback((response: LoginResponseDto) => {
         const user: UserInfo = {
             userId: response.userId,
+            userName: response.userName,
             authToken: response.authToken,
             refreshToken: response.refreshToken,
             authTokenExpiration: getJwtExpiration(response.authToken)
@@ -114,6 +115,7 @@ export function UserContextProvider({ children }: { children: ReactNode }) {
 
     const contextValue: UserContextModel = {
         userId: user ? user.userId : null,
+        userName: user ? user.userName : null,
         loggedIn,
         initialized,
         authError,

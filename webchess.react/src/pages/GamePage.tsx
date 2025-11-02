@@ -4,39 +4,44 @@ import ChessBoard from "@/components/ChessBoard";
 import { getGame } from "@/api/client/game-client";
 import type { GameResponseDto } from "@/api/models/GameResponseDto";
 import { useChessGameContext } from "@/contexts/ChessGameContext";
-import { PIECE_UNICODE } from "@/utils/pieces";
+import { PIECE_IMAGES } from "@/utils/pieces";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
 import MoveHistoryTable from "../components/MoveHistoryTable";
-import { Button, Typography } from "@mui/material";
+import { Button, Typography, Chip } from "@mui/material";
 import { ResignDialog } from "../components/ResignDialog";
 import { GameOverDialog } from "../components/GameOverDialog";
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import InfoIcon from '@mui/icons-material/Info';
+import ErrorIcon from '@mui/icons-material/Error';
+import CircleIcon from '@mui/icons-material/Circle';
 
 const GamePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [game, setGame] = useState<GameResponseDto | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [open, setOpen] = useState(false);
-    const [gameOverOpen, setGameOverOpen] = useState(false);
-    const { joinGame, gameId, chessRef, takenPieces, playerColor, resign, loadGame, isActiveGame } = useChessGameContext();
-    const initializedRef = useRef(false);
+  const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [gameOverOpen, setGameOverOpen] = useState(false);
+  const { joinGame, gameId, chessRef, takenPieces, playerColor, resign, loadGame, isActiveGame, gameResult } = useChessGameContext();
+  const initializedRef = useRef(false);
 
-    useEffect(() => {
+  useEffect(() => {
     if (!id || initializedRef.current) return;
     initializedRef.current = true;
     setLoading(true);
     getGame(id)
-        .then((fetchedGame) => {
-            if (!gameId) {
-                loadGame(fetchedGame);
-                if (fetchedGame.status == "active" || fetchedGame.status == "waiting") {
-
-                    joinGame(fetchedGame.id);
-                }
-            }
-            setGame(fetchedGame); // TODO load game only if user was one of the players
-        })
+      .then((fetchedGame) => {
+        if (!gameId) {
+          loadGame(fetchedGame);
+          if (fetchedGame.status == "active" || fetchedGame.status == "waiting") {
+            joinGame(fetchedGame.id);
+          }
+        }
+        setGame(fetchedGame); // TODO load game only if user was one of the players
+      })
       .catch((err) => {
         if (err.message === "Forbidden") {
           navigate("/unauthorized");
@@ -47,29 +52,30 @@ const GamePage: React.FC = () => {
         }
       })
       .finally(() => setLoading(false));
-    }, [id, gameId, navigate, loadGame, joinGame]);
+  }, [id, gameId, navigate, loadGame, joinGame]);
 
-    const wasActiveRef = useRef(isActiveGame);
-    useEffect(() => {
-        if (wasActiveRef.current && !isActiveGame) {
-            setGameOverOpen(true);
-        }
-        wasActiveRef.current = isActiveGame;
-    }, [isActiveGame]);
+  const wasActiveRef = useRef(isActiveGame);
+  useEffect(() => {
+    if (wasActiveRef.current && !isActiveGame) {
+      setGameOverOpen(true);
+    }
+    wasActiveRef.current = isActiveGame;
+  }, [isActiveGame]);
 
   if (loading) return <div>Loading...</div>;
-    if (!game) return null;
+  if (!game) return null;
 
-    const handleOpenResignDialog = () => {
-        setOpen(true);
-    }
-    const handleCloseResignDialog = () => {
-        setOpen(false);
-    }
-    const handleResign = () => {
-        resign();
-        setOpen(false);
-    }
+  const handleOpenResignDialog = () => {
+    setOpen(true);
+  }
+  const handleCloseResignDialog = () => {
+    setOpen(false);
+  }
+  const handleResign = () => {
+    resign();
+    setOpen(false);
+  }
+
   const playerPieces = takenPieces.filter(
     (piece) =>
       (playerColor === "w" && piece === piece.toUpperCase()) ||
@@ -83,25 +89,44 @@ const GamePage: React.FC = () => {
   );
 
   let statusMessage = "";
-  let severity: "info" | "warning" | "success" | "error" = "info";
+  let statusType: "checkmate" | "stalemate" | "draw" | "check" | "turn" = "turn";
+  let statusIcon: JSX.Element;
+  let statusColor: string;
+  let chipColor: "error" | "warning" | "info" | "success" = "info";
+  const currentTurn = chessRef.current.turn();
+  const currentPlayer = currentTurn === "w" ? "White" : "Black";
+  const playerColorIndicator = currentTurn === "w" ? "#ffffff" : "#000000";
 
   if (chessRef.current.isCheckmate()) {
-    statusMessage = `Checkmate! ${chessRef.current.turn() === "w" ? "Black" : "White"} wins.`;
-    severity = "error";
+    statusMessage = `Checkmate! ${currentTurn === "w" ? "Black" : "White"} wins.`;
+    statusType = "checkmate";
+    statusIcon = <ErrorIcon />;
+    statusColor = "#d32f2f";
+    chipColor = "error";
   } else if (chessRef.current.isStalemate()) {
     statusMessage = "Stalemate! The game is a draw.";
-    severity = "warning";
+    statusType = "stalemate";
+    statusIcon = <WarningAmberIcon />;
+    statusColor = "#ed6c02";
+    chipColor = "warning";
   } else if (chessRef.current.isDraw()) {
     statusMessage = "Draw!";
-    severity = "warning";
+    statusType = "draw";
+    statusIcon = <CheckCircleIcon />;
+    statusColor = "#ed6c02";
+    chipColor = "warning";
   } else if (chessRef.current.isCheck()) {
-    statusMessage = `${chessRef.current.turn() === "w" ? "White" : "Black"} is in check.`;
-    severity = "warning";
+    statusType = "check";
+    statusIcon = <WarningAmberIcon />;
+    statusColor = "#ed6c02";
+    chipColor = "warning";
   } else {
-    statusMessage = `${chessRef.current.turn() === "w" ? "White" : "Black"}'s turn.`;
-      severity = "info";
+    statusType = "turn";
+    statusIcon = <InfoIcon />;
+    statusColor = "#0288d1";
+    chipColor = "info";
+  }
 
-   }
   return (
     <Box
       sx={{
@@ -110,40 +135,172 @@ const GamePage: React.FC = () => {
         alignItems: "center",
         marginTop: "2rem",
         gap: 2,
+      }}
+    >
+      {isActiveGame && (
+        <Paper
+          elevation={3}
+          sx={{
+            width: "80%",
+            maxWidth: '900px',
+            mb: 2,
+            borderRadius: 3,
+            overflow: 'hidden',
+            background: `linear-gradient(135deg, ${statusColor}15 0%, ${statusColor}05 100%)`,
+            border: `2px solid ${statusColor}30`,
           }}
-      >{isActiveGame &&
-      <Box sx={{ width: "80%", maxWidth: '900px', mb: 2 }}>
-        <Alert severity={severity}>{statusMessage}</Alert>
-      </Box>}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              px: 3,
+              py: 2,
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 40,
+                  height: 40,
+                  borderRadius: '50%',
+                  bgcolor: `${statusColor}20`,
+                  color: statusColor,
+                }}
+              >
+                {statusIcon}
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                {(statusType === "turn" || statusType === "check") && (
+                  <Box
+                    sx={{
+                      width: 16,
+                      height: 16,
+                      borderRadius: '50%',
+                      bgcolor: playerColorIndicator,
+                      border: currentTurn === "w" ? '2px solid #666' : 'none',
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                    }}
+                  />
+                )}
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontWeight: 600,
+                    color: 'text.primary',
+                  }}
+                >
+                  {statusType === "check" 
+                    ? `${currentPlayer} is in check!`
+                    : statusType === "turn"
+                    ? `${currentPlayer}'s turn`
+                    : statusMessage
+                  }
+                </Typography>
+              </Box>
+            </Box>
+
+            <Chip
+              label={statusType === "turn" 
+                ? (currentTurn === "w" ? "White to move" : "Black to move")
+                : statusType.charAt(0).toUpperCase() + statusType.slice(1)
+              }
+              color={chipColor}
+              icon={
+                (statusType === "turn" || statusType === "check") ? (
+                  <CircleIcon sx={{ 
+                    fontSize: 14,
+                    color: `${playerColorIndicator} !important`,
+                    filter: currentTurn === "w" ? 'drop-shadow(0 0 2px rgba(0,0,0,0.5))' : 'none'
+                  }} />
+                ) : undefined
+              }
+              sx={{
+                fontWeight: 600,
+                px: 1,
+              }}
+            />
+          </Box>
+        </Paper>
+      )}
 
       <Box sx={{ display: 'flex', flexDirection: 'row', gap: 4, alignItems: 'stretch' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'left', justifyContent: 'space-between' }}>
-          <Typography variant="h6" sx={{ minHeight: '32px', fontFamily: 'monospace', pl: '24px' }}>
-            {opponentPieces.map((p) => PIECE_UNICODE[p]).join("")}
-          </Typography>
+          {/* Opponent's taken pieces */}
+          <Box sx={{ 
+            minHeight: '40px', 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: 0.5,
+            pl: '24px',
+            flexWrap: 'wrap'
+          }}>
+            {opponentPieces.map((piece, index) => (
+              <img
+                key={index}
+                src={PIECE_IMAGES[piece]}
+                alt={`Taken ${piece}`}
+                style={{
+                  width: '25px',
+                  height: '25px',
+                  filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))'
+                }}
+              />
+            ))}
+          </Box>
+
           <ChessBoard />
-          <Typography variant="h6" sx={{ minHeight: '32px', fontFamily: 'monospace', pl: '24px' }}>
-            {playerPieces.map((p) => PIECE_UNICODE[p]).join("")}
-          </Typography>
+
+          {/* Player's taken pieces */}
+          <Box sx={{ 
+            minHeight: '40px', 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: 0.5,
+            pl: '24px',
+            flexWrap: 'wrap'
+          }}>
+            {playerPieces.map((piece, index) => (
+              <img
+                key={index}
+                src={PIECE_IMAGES[piece]}
+                alt={`Taken ${piece}`}
+                style={{
+                  width: '25px',
+                  height: '25px',
+                  filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))'
+                }}
+              />
+            ))}
+          </Box>
         </Box>
 
-              <Box sx={{ width: '300px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <MoveHistoryTable />
-                  {isActiveGame &&  < Button variant="contained" color="error" onClick={() => handleOpenResignDialog()}
-                    sx={{
-                        mt: 2,
-                        fontWeight: 'bold',
-                        width: '70%',
-                        fontFamily: ''
-                      }}
-                  >Resign
-                  </Button>}
-                  <ResignDialog open={open} handleResign={handleResign} onClose={handleCloseResignDialog} />
-                  <GameOverDialog
-                      open={gameOverOpen}
-                      winner="white" //TODO extend info in gameover dialog
-                      onClose={() => setGameOverOpen(false)}
-                  />
+        <Box sx={{ width: '300px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <MoveHistoryTable />
+          {isActiveGame && (
+            <Button 
+              variant="contained" 
+              color="error" 
+              onClick={() => handleOpenResignDialog()}
+              sx={{
+                mt: 2,
+                fontWeight: 'bold',
+                width: '70%',
+              }}
+            >
+              Resign
+            </Button>
+          )}
+          <ResignDialog open={open} handleResign={handleResign} onClose={handleCloseResignDialog} />
+          <GameOverDialog
+            open={gameOverOpen}
+            winner={gameResult}
+            onClose={() => setGameOverOpen(false)}
+          />
         </Box>
       </Box>
     </Box>

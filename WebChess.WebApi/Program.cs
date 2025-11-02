@@ -52,6 +52,9 @@ builder.Services.AddSwaggerGen(c => {
 });
 builder.Services.AddAutoMapper();
 
+builder.Services.AddSignalRServices();
+builder.Services.AddDataAccess(builder.Configuration);
+
 var jwtSection = builder.Configuration.GetSection("JwtSettings");
 var jwtSettings = jwtSection.Get<JwtSettings>() ?? throw new ArgumentNullException(nameof(JwtSettings));
 builder.Services.Configure<JwtSettings>(jwtSection);
@@ -66,11 +69,20 @@ builder.Services.AddAuthentication(options => {
 		ClockSkew = TimeSpan.Zero,
 		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey))
 	};
+
+	options.Events = new JwtBearerEvents {
+		OnMessageReceived = context => {
+			var accessToken = context.Request.Query["access_token"];
+
+			var path = context.HttpContext.Request.Path;
+			if (!string.IsNullOrEmpty(accessToken) &&
+				(path.StartsWithSegments("/chessHub"))) {
+				context.Token = accessToken;
+			}
+			return Task.CompletedTask;
+		}
+	};
 });
-
-
-builder.Services.AddSignalRServices();
-builder.Services.AddDataAccess(builder.Configuration);
 
 builder.Services.AddCors(options =>
    {

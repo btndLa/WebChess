@@ -3,6 +3,7 @@ import  { LoginRequestDto } from "@/api/models/LoginRequestDto";
 
 export interface UserInfo {
     userId: string;
+    userName: string;
     authTokenExpiration: number;
     authToken: string;
     refreshToken: string;
@@ -10,6 +11,7 @@ export interface UserInfo {
 
 export interface UserContextModel{
     userId: string | null;
+    userName: string | null;
     loggedIn: boolean;
     initialized: boolean;
     authError: string | null
@@ -18,6 +20,7 @@ export interface UserContextModel{
 }
 export const UserContext = createContext<UserContextModel>({
     userId: null,
+    userName: null,
     loggedIn: false,
     initialized: false,
     authError: null,

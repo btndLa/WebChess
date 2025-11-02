@@ -29,10 +29,11 @@ namespace WebChess.WebApi.Controllers {
 		[HttpPost]
 		[Route("login")]
 		public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto) {
-			var (authToken, refreshToken, userId) = await _userService.LoginAsync(loginRequestDto.UserName, loginRequestDto.Password);
+			var (authToken, refreshToken, userId, userName) = await _userService.LoginAsync(loginRequestDto.UserName, loginRequestDto.Password);
 
 			var loginResponseDto = new LoginResponseDto {
 				UserId = userId,
+				UserName = userName,
 				AuthToken = authToken,
 				RefreshToken = refreshToken,
 			};
@@ -44,18 +45,20 @@ namespace WebChess.WebApi.Controllers {
 		[Route("logout")]
 		[Authorize]
 		public async Task<IActionResult> Logout() {
+			Console.WriteLine("Logout");
 			await _userService.LogoutAsync();
 
 			return NoContent();
 		}
-
+                                                                                                                                                                                                                                                                                                        
 		[HttpPost]
 		[Route("refresh")]
 		public async Task<IActionResult> RedeemRefreshToken([FromBody] string refreshToken) {
-			var (authToken, newRefreshToken, userId) = await _userService.RedeemRefreshTokenAsync(refreshToken);
+			var (authToken, newRefreshToken, userId, userName) = await _userService.RedeemRefreshTokenAsync(refreshToken);
 
 			var loginResponseDto = new LoginResponseDto {
 				UserId = userId,
+				UserName = userName,
 				AuthToken = authToken,
 				RefreshToken = newRefreshToken,
 			};

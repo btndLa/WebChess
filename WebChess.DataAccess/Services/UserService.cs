@@ -36,7 +36,7 @@ namespace WebChess.DataAccess.Services {
 			}
 		}
 
-		public async Task<(string authToken, string refreshToken, string userId)> LoginAsync(string username, string password) {
+		public async Task<(string authToken, string refreshToken, string userId, string userName)> LoginAsync(string username, string password) {
 			var user = await _userManager.FindByNameAsync(username);
 			if (user == null) {
 				throw new UnauthorizedAccessException("Invalid username or password");
@@ -50,10 +50,10 @@ namespace WebChess.DataAccess.Services {
 				throw new UnauthorizedAccessException("User account is locked out");
 			}
 			var token = await GenerateJwtTokenAsync(user);
-			return (token, user.RefreshToken.ToString(), user.Id!);
+			return (token, user.RefreshToken.ToString(), user.Id!, user.UserName!);
 		}
 
-		public async Task<(string authToken, string refreshToken, string userId)> RedeemRefreshTokenAsync(string refreshToken) {
+		public async Task<(string authToken, string refreshToken, string userId, string userName)> RedeemRefreshTokenAsync(string refreshToken) {
 			if (!Guid.TryParse(refreshToken, out var parsedToken)) {
 				throw new AccessViolationException("Invalid refresh token");
 			}
@@ -64,11 +64,13 @@ namespace WebChess.DataAccess.Services {
 			}
 
 			var accessToken = await GenerateJwtTokenAsync(user);
-			return (accessToken, refreshToken, user.Id!);
+			return (accessToken, refreshToken, user.Id!, user.UserName!);
 		}
 
 		public async Task<User?> GetCurrentUserAsync() {
 			var userId = GetCurrentUserId();
+			Console.WriteLine("userId");
+			Console.WriteLine(userId);
 			if (userId == null)
 				return null;
 
@@ -77,6 +79,8 @@ namespace WebChess.DataAccess.Services {
 
 		public string? GetCurrentUserId() {
 			var id = _httpContextAccessor.HttpContext?.User.FindFirstValue("id");
+			Console.WriteLine("id");
+			Console.WriteLine(id);
 			if (id == null)
 				return null;
 
@@ -85,6 +89,8 @@ namespace WebChess.DataAccess.Services {
 
 		public async Task LogoutAsync() {
 			var user = await GetCurrentUserAsync();
+			Console.WriteLine("user");
+			Console.WriteLine(user);
 			if (user == null)
 				return;
 
