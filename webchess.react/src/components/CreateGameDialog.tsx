@@ -48,9 +48,11 @@ export function CreateGameDialog({ open, onClose }: CreateGameDialogProps) {
         }
     };
 
-    const handleClose = () => {
-        onClose();
-    };
+  const handleClose = () => {
+    if (!waiting) {
+      onClose();
+    }
+  };
 
     return (
         <Dialog

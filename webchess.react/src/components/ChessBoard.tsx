@@ -23,10 +23,15 @@ export function ChessBoard(){
         playerColor
     } = useChessGameContext();
 
-    function getPieceImage(cell: ChessPiece | null): React.ReactElement | null {
-        if (!cell) return null;
-
-        const key = cell.color === "w" ? cell.type.toUpperCase() : cell.type.toLowerCase();
+  function getPieceImage(cell: any): React.ReactElement | null {
+    if (!cell) return null;
+    
+    let key: string;
+    if (typeof cell === "object" && cell.type && cell.color) {
+      key = cell.color === "w" ? cell.type.toUpperCase() : cell.type.toLowerCase();
+    } else {
+      key = cell;
+    }
 
         const imageSrc = PIECE_IMAGES[key];
         if (!imageSrc) return null;

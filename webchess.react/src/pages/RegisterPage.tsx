@@ -43,15 +43,7 @@ export function RegisterPage() {
             });
             setSuccess('Registration successful! You can now log in.'); 
         } catch (err) {
-            if (err instanceof yup.ValidationError) {
-                setFormErrors(yupErrorsToObject(err.inner));
-            } else if (err instanceof ServerSideValidationError) {
-                setFormErrors(err.validationErrors);
-            } else if (err instanceof HttpError) {
-                setError(err.message);
-            } else {
-                setError('An unexpected error occurred. Please try again later.');
-            }
+            setError(err instanceof Error ? err.message + ' Registration failed. Please check your input.' : 'Registration failed. Please check your input.');
         }
     };
 

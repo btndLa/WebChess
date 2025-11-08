@@ -2,7 +2,7 @@ import { useState, ReactNode, useRef } from "react";
 import { Chess, Square, Move } from "chess.js";
 import { ChessGameContext } from "./ChessGameContext";
 import { HubConnection } from "@microsoft/signalr";
-import { createGame, endGame, initSignalRConnection } from "../api/client/game-client";
+import { endGame, initSignalRConnection } from "../api/client/game-client";
 import { GameResponseDto } from "../api/models/GameResponseDto";
 import { useNavigate } from "react-router-dom";
 

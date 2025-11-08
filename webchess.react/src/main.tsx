@@ -30,8 +30,8 @@ const router = createBrowserRouter([
             },
         ],
     },
-]);
-
+], { basename: "/WebChess" });
+                
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>

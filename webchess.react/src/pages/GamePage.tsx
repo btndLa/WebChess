@@ -27,36 +27,36 @@ export function GamePage() {
     const { joinGameSession, gameId, chessRef, takenPieces, playerColor, resign, loadGame, isActiveGame, gameResult } = useChessGameContext();
     const initializedRef = useRef(false);
 
-    useEffect(() => {
-        if (!id || initializedRef.current) return;
-        initializedRef.current = true;
-        setLoading(true);
-        getGame(id)
-            .then((fetchedGame) => {
-                if (!fetchedGame) {
-                    navigate("/notfound");
-                    return;
-                }
-
-                if (!gameId) {
-                    loadGame(fetchedGame);
-                    if (fetchedGame.status === "active" || fetchedGame.status === "waiting") {
-                        joinGameSession(fetchedGame.id);
-                    }
-                }
-                setGame(fetchedGame);
-            })
-            .catch((err) => {
-                if (err.message === "Forbidden") {
-                    navigate("/unauthorized");
-                } else if (err.message === "Not Found") {
-                    navigate("/notfound");
-                } else {
-                    navigate("/error");
-                }
-            })
-            .finally(() => setLoading(false));
-    }, [id, gameId, navigate, loadGame, joinGameSession]);
+  useEffect(() => {
+    if (!id || initializedRef.current) return;
+    initializedRef.current = true;
+    setLoading(true);
+    getGame(id)
+      .then((fetchedGame) => {
+        if (!fetchedGame) {
+          navigate("/notfound");
+          return;
+        }
+        
+        if (!gameId) {
+          loadGame(fetchedGame);
+          if (fetchedGame.status === "active" || fetchedGame.status === "waiting") {
+            joinGame(fetchedGame.id);
+          }
+        }
+        setGame(fetchedGame); // TODO load game only if user was one of the players
+      })
+      .catch((err) => {
+        if (err.message === "Forbidden") {
+          navigate("/unauthorized");
+        } else if (err.message === "Not Found") {
+          navigate("/notfound");
+        } else {
+          navigate("/error");
+        }
+      })
+      .finally(() => setLoading(false));
+  }, [id, gameId, navigate, loadGame, joinGame]);
 
     const wasActiveRef = useRef(isActiveGame);
     useEffect(() => {
@@ -96,14 +96,18 @@ export function GamePage() {
             (playerColor === "b" && piece === piece.toUpperCase())
     );
 
-    let statusMessage = "";
-    let statusType: "checkmate" | "stalemate" | "draw" | "check" | "turn" = "turn";
-    let statusIcon: React.ReactElement;
-    let statusColor: string;
-    let chipColor: "error" | "warning" | "info" | "success" = "info";
-    const currentTurn = chessRef.current.turn();
-    const currentPlayer = currentTurn === "w" ? "White" : "Black";
-    const playerColorIndicator = currentTurn === "w" ? "#ffffff" : "#000000";
+  if (!chessRef.current) {
+    return <div>Loading game state...</div>;
+  }
+
+  let statusMessage = "";
+  let statusType: "checkmate" | "stalemate" | "draw" | "check" | "turn" = "turn";
+  let statusIcon: React.ReactElement;
+  let statusColor: string;
+  let chipColor: "error" | "warning" | "info" | "success" = "info";
+  const currentTurn = chessRef.current.turn();
+  const currentPlayer = currentTurn === "w" ? "White" : "Black";
+  const playerColorIndicator = currentTurn === "w" ? "#ffffff" : "#000000";
 
     if (chessRef.current.isCheckmate()) {
         statusMessage = `Checkmate! ${currentTurn === "w" ? "Black" : "White"} wins.`;
