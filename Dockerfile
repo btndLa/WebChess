@@ -8,7 +8,10 @@ COPY WebChess.DataAccess/*.csproj WebChess.DataAccess/
 COPY WebChess.Shared/*.csproj WebChess.Shared/
 
 RUN dotnet restore
-COPY . .
+
+COPY WebChess.WebApi/ WebChess.WebApi/
+COPY WebChess.DataAccess/ WebChess.DataAccess/
+COPY WebChess.Shared/ WebChess.Shared/
 
 RUN dotnet publish WebChess.WebAPI/WebChess.WebAPI.csproj -c Release -o out
 
