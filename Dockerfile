@@ -21,4 +21,4 @@ COPY --from=build /app/out .
 
 EXPOSE 7280
 
-ENTRYPOINT ["dotnet", "WebChess.dll"]
+ENTRYPOINT ["dotnet", "WebChess.WebApi.dll"]
