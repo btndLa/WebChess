@@ -120,7 +120,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseCors();
+app.UseCors("FrontendPolicy");
 
 app.MapControllerRoute(
     name: "default",
