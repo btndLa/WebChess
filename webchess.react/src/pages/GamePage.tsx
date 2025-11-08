@@ -5,7 +5,6 @@ import { getGame } from "@/api/client/game-client";
 import type { GameResponseDto } from "@/api/models/GameResponseDto";
 import { useChessGameContext } from "@/contexts/ChessGameContext";
 import { PIECE_IMAGES } from "@/utils/pieces";
-import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import MoveHistoryTable from "../components/MoveHistoryTable";
@@ -34,9 +33,14 @@ const GamePage: React.FC = () => {
     setLoading(true);
     getGame(id)
       .then((fetchedGame) => {
+        if (!fetchedGame) {
+          navigate("/notfound");
+          return;
+        }
+        
         if (!gameId) {
           loadGame(fetchedGame);
-          if (fetchedGame.status == "active" || fetchedGame.status == "waiting") {
+          if (fetchedGame.status === "active" || fetchedGame.status === "waiting") {
             joinGame(fetchedGame.id);
           }
         }
@@ -88,9 +92,13 @@ const GamePage: React.FC = () => {
       (playerColor === "b" && piece === piece.toUpperCase())
   );
 
+  if (!chessRef.current) {
+    return <div>Loading game state...</div>;
+  }
+
   let statusMessage = "";
   let statusType: "checkmate" | "stalemate" | "draw" | "check" | "turn" = "turn";
-  let statusIcon: JSX.Element;
+  let statusIcon: React.ReactElement;
   let statusColor: string;
   let chipColor: "error" | "warning" | "info" | "success" = "info";
   const currentTurn = chessRef.current.turn();

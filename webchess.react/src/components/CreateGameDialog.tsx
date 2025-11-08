@@ -64,13 +64,6 @@ export const CreateGameDialog: React.FC<{
     }
   };
 
-  const handleGoToGame = () => {
-    if (gameId) {
-      navigate(`/game/${gameId}`);
-      onClose();
-    }
-  };
-
   const handleClose = () => {
     if (!waiting) {
       onClose();

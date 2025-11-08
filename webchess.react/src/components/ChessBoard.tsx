@@ -20,7 +20,7 @@ const ChessBoard: React.FC = () => {
     playerColor
   } = useChessGameContext();
 
-  function getPieceImage(cell: any): JSX.Element | null {
+  function getPieceImage(cell: any): React.ReactElement | null {
     if (!cell) return null;
     
     let key: string;

@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { Square } from "chess.js";
+import type { Chess, Square } from "chess.js";
 import { HubConnection } from "@microsoft/signalr";
 import { GameResponseDto } from "../api/models/GameResponseDto";
 

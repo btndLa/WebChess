@@ -23,7 +23,7 @@ const RegisterPage: React.FC = () => {
 
             setSuccess('Registration successful! You can now log in.');
         } catch (err) {
-            setError(err.message + 'Registration failed. Please check your input.');
+            setError(err instanceof Error ? err.message + ' Registration failed. Please check your input.' : 'Registration failed. Please check your input.');
         }
     };
 

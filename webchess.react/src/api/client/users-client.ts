@@ -20,6 +20,6 @@ export async function createUser(data: UserRequestDto): Promise<UserResponseDto>
     return await postAsJson<UserRequestDto, UserResponseDto>("users", data);
 }
 
-export async function getUserById(id: string): Promise<UserResponseDto> {
+export async function getUserById(id: string): Promise<UserResponseDto | null > {
     return get<UserResponseDto>(`users/${id}`);
 }

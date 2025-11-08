@@ -88,7 +88,7 @@ builder.Services.AddCors(options =>
    {
        options.AddDefaultPolicy(policy =>
        {
-           policy.WithOrigins("http://0.0.0.0:5173")
+           policy.WithOrigins("https://btndla.github.io")
                  .AllowAnyHeader()
                  .AllowAnyMethod();
        });
