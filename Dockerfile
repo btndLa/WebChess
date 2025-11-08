@@ -3,7 +3,7 @@ WORKDIR /app
 
 COPY *.sln ./
 
-COPY WebChess.WebAPI/*.csproj WebChess.WebAPI/
+COPY WebChess.WebApi/*.csproj WebChess.WebApi/
 COPY WebChess.DataAccess/*.csproj WebChess.DataAccess/
 COPY WebChess.Shared/*.csproj WebChess.Shared/
 
