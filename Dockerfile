@@ -22,5 +22,4 @@ COPY --from=build /app/out .
 # Expose the port your app runs on
 EXPOSE 7280
 
-# Start the app
-ENTRYPOINT ["dotnet", "WebChess.dll"]
+ENTRYPOINT ["dotnet", "WebChess.WebApi.dll"]
