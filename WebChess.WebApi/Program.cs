@@ -83,13 +83,15 @@ builder.Services.AddAuthentication(options => {
 	};
 });
 
-builder.Services.AddCors(options => {
-	options.AddDefaultPolicy(policy => {
-		policy.WithOrigins("http://localhost:5173")
-			  .AllowAnyHeader()
-			  .AllowAnyMethod();
-	});
-});
+builder.Services.AddCors(options =>
+   {
+       options.AddDefaultPolicy(policy =>
+       {
+           policy.WithOrigins("https://btndla.github.io")
+                 .AllowAnyHeader()
+                 .AllowAnyMethod();
+       });
+   });
 
 builder.Services.AddSignalR().
 	AddJsonProtocol(options => {
