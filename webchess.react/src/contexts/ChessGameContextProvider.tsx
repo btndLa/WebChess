@@ -1,9 +1,8 @@
-import { useState, ReactNode, useRef, useCallback } from "react";
+import { useState, ReactNode, useRef } from "react";
 import { Chess, Square, Move } from "chess.js";
 import { ChessGameContext } from "./ChessGameContext";
 import { HubConnection } from "@microsoft/signalr";
 import { endGame, initSignalRConnection } from "../api/client/game-client";
-import { useUserContext } from "./UserContext";
 import { GameResponseDto } from "../api/models/GameResponseDto";
 
 

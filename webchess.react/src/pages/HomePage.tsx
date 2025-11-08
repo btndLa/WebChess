@@ -16,7 +16,6 @@ import { CreateGameDialog } from '../components/CreateGameDialog';
 import { JoinGameDialog } from '../components/JoinGameDialog';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 
 const HomePage: React.FC = () => {
     const { loggedIn, userName } = useUserContext();
