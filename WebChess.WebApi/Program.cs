@@ -12,6 +12,15 @@ using WebChess.WebApi.SignalR.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var secretsFilePath = Environment.GetEnvironmentVariable("SECRETS_FILE_PATH");
+if (!string.IsNullOrEmpty(secretsFilePath) && File.Exists(secretsFilePath)) {
+	builder.Configuration.AddJsonFile(secretsFilePath, optional: false, reloadOnChange: true);
+	Console.WriteLine($"Loaded secrets from: {secretsFilePath}");
+}
+else if (!string.IsNullOrEmpty(secretsFilePath)) {
+	Console.WriteLine($"WARNING: Secrets file not found at: {secretsFilePath}");
+}
+
 // Add services to the container.
 builder.Services.AddControllers(options => {
 	options.Filters.Add(new ProducesAttribute("application/json"));
