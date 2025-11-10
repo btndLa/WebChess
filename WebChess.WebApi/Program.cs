@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
@@ -135,5 +136,11 @@ app.MapControllerRoute(
 app.MapHub<ChessHub>("/chessHub", options => {
 	options.CloseOnAuthenticationExpiration = true;
 });
+
+using (var scope = app.Services.CreateScope()) {
+	var db = scope.ServiceProvider.GetRequiredService<WebChessDbContext>();
+	db.Database.Migrate();
+}
+
 
 app.Run();
