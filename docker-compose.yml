@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  mssql:
+    
+    ports:
+      - "5000:8080"
+    environment:
+      - ACCEPT_EULA=y
+      - MSSQL_SA_PASSWORD=P#s9a!Ld$1s46[j*a
+    depends_on:
+      - sqlserver
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong!Passw0rd
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+
+volumes:
+  sql_data:
