@@ -11,7 +11,7 @@ using WebChess.DataAccess;
 namespace WebChess.DataAccess.Migrations
 {
     [DbContext(typeof(WebChessDbContext))]
-    [Migration("20251110013636_InitialMySql")]
+    [Migration("20251110015443_InitialMySql")]
     partial class InitialMySql
     {
         /// <inheritdoc />
