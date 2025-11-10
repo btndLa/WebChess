@@ -11,13 +11,13 @@ export default defineConfig({
     server: {
         proxy: {
             '/api': {
-                target: "https://btndla.github.io",
+                target: "https://webchess-tgu8.onrender.com",
                 changeOrigin: true,
                 secure: false,
                 rewrite: (path) => path.replace(/^\/api/, '')
             },
             '/signalr': {
-                target: 'https://btndla.github.io',
+                target: 'https://webchess-tgu8.onrender.com',
                 ws: true,
                 secure: false,
                 rewrite: (path) => path.replace(/^\/signalr/, '')
