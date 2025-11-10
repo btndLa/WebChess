@@ -11,7 +11,7 @@ namespace WebChess.DataAccess {
 			// Database
 			var connectionString = config.GetConnectionString("DefaultConnection");
 			services.AddDbContext<WebChessDbContext>(options => options
-				.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
+				.UseMySql(connectionString)
 			);
 
 			// Services
