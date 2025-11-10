@@ -10,13 +10,13 @@ export default defineConfig({
     server: {
         proxy: {
             '/api': {
-                target: "https://localhost:7280",
+                target: "https://webchess-tgu8.onrender.com",
                 changeOrigin: true,
                 secure: false,
                 rewrite: (path) => path.replace(/^\/api/, '')
             },
             '/signalr': {
-                target: 'https://localhost:7280',
+                target: 'https://webchess-tgu8.onrender.com',
                 ws: true,
                 secure: false,
                 rewrite: (path) => path.replace(/^\/signalr/, '')
