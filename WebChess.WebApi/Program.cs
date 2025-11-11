@@ -95,12 +95,13 @@ builder.Services.AddAuthentication(options => {
 
 builder.Services.AddCors(options =>
    {
-       options.AddDefaultPolicy(policy =>
+       options.AddPolicy("AllowFrontend", policy =>
        {
            policy.WithOrigins("https://btndla.github.io")
                  .AllowAnyHeader()
-                 .AllowAnyMethod();
-       });
+                 .AllowAnyMethod()
+				 .AllowCredentials();
+	   });
    });
 
 builder.Services.AddSignalR().
@@ -124,6 +125,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 app.UseAuthorization();
