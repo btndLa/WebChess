@@ -16,9 +16,7 @@ import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import ShareIcon from '@mui/icons-material/Share';
 import Divider from '@mui/material/Divider';
-import { useNavigate } from "react-router-dom";
 import { useChessGameContext } from "@/contexts/ChessGameContext";
-import { createGame } from "../api/client/game-client";
 
 export const CreateGameDialog: React.FC<{
     open: boolean;
@@ -27,28 +25,13 @@ export const CreateGameDialog: React.FC<{
     const [loading, setLoading] = useState(false);
     const [copied, setCopied] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [waiting, setWaiting] = useState(false);
-    const [opponentJoined, setOpponentJoined] = useState(false);
-    const navigate = useNavigate();
-    const { gameId, joinGame, loadGame, connectionRef, setIsActiveGame } = useChessGameContext();
+    const { gameId, createGameSession } = useChessGameContext();
 
     const handleCreate = async () => {
         setLoading(true);
         setError(null);
         try {
-            const gameData = await createGame(); // TODO sometimes code stays the same after game
-            await joinGame(gameData.id);
-            loadGame(gameData);
-            connectionRef.current?.on("PlayerJoined", () => {// TODO Move this to the provider
-                if (gameData.status == "waiting") {
-                    setOpponentJoined(true);
-                    setWaiting(false);
-                    onClose();
-                    navigate(`/game/${gameData.id}`);
-                    setIsActiveGame(true);
-                }
-            });
-            setWaiting(true);
+            await createGameSession();
         } catch (e) {
             setError(e instanceof Error ? e.message : "Unknown error");
         } finally {
@@ -65,9 +48,7 @@ export const CreateGameDialog: React.FC<{
     };
 
     const handleClose = () => {
-        if (!waiting) {
-            onClose();
-        }
+        onClose();
     };
 
     return (
@@ -212,7 +193,7 @@ export const CreateGameDialog: React.FC<{
                         <Divider sx={{ my: 2 }} />
 
                         {/* Status Section */}
-                        {waiting && (
+                        {(
                             <Box sx={{
                                 display: 'flex',
                                 alignItems: 'center',
@@ -228,27 +209,6 @@ export const CreateGameDialog: React.FC<{
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary">
                                         The game will start automatically when your friend joins
-                                    </Typography>
-                                </Box>
-                            </Box>
-                        )}
-
-                        {opponentJoined && (
-                            <Box sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 2,
-                                p: 2,
-                                bgcolor: 'success.light',
-                                borderRadius: 2
-                            }}>
-                                <CheckCircleIcon color="success" />
-                                <Box>
-                                    <Typography variant="subtitle2" fontWeight={600} color="success.dark">
-                                        Opponent Joined!
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        Your friend has joined. Let the game begin!
                                     </Typography>
                                 </Box>
                             </Box>
@@ -286,7 +246,7 @@ export const CreateGameDialog: React.FC<{
                 )}
                 {gameId && (
                     <>
-                        {!waiting && (
+                        {(
                             <Button
                                 onClick={handleClose}
                                 color="inherit"

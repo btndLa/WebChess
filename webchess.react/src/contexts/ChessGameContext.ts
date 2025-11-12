@@ -18,6 +18,7 @@ export interface ChessGameContextType {
     setGameId: (id: string | null) => void;
     loadGame: (gameData: GameResponseDto) => Promise<void>;
     joinGame: (id: string) => void;
+    createGameSession: () => Promise<void>;
     connectionRef: React.RefObject<HubConnection | null>;
     playerColor: "w" | "b" | null;
     setPlayerColor: (color: "w" | "b" | null) => void;

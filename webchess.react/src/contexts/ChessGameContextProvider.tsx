@@ -2,8 +2,9 @@ import { useState, ReactNode, useRef } from "react";
 import { Chess, Square, Move } from "chess.js";
 import { ChessGameContext } from "./ChessGameContext";
 import { HubConnection } from "@microsoft/signalr";
-import { endGame, initSignalRConnection } from "../api/client/game-client";
+import { createGame, endGame, initSignalRConnection } from "../api/client/game-client";
 import { GameResponseDto } from "../api/models/GameResponseDto";
+import { useNavigate } from "react-router-dom";
 
 
 //TODO transfer to always update and receive from backend
@@ -24,7 +25,7 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
     const [isActiveGame, setIsActiveGame] = useState<boolean>(false)
     const [gameResult, setGameResult] = useState<string | null>(null);
 
-
+    const navigate = useNavigate();
 
     const turn = chessRef.current.turn() as "w" | "b";
     const board = chessRef.current.board();
@@ -122,12 +123,25 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
             endGame(id, winner);
             setIsActiveGame(false);
             setGameResult(winner);
+            setGameId(null);
         });
         await conn.start();
         await conn.invoke("JoinGameGroup", id); //TODO WHen joining to exisitng game, getting a warning
         connectionRef.current = conn;
         setGameId(id);
         setIsActiveGame(true);
+    };
+
+    const createGameSession = async () => {
+        const gameData = await createGame();
+        await joinGame(gameData.id);
+        loadGame(gameData);
+        connectionRef.current?.on("PlayerJoined", () => {
+            if (gameData.status === "waiting") {
+                setIsActiveGame(true);
+                navigate(`/game/${gameData.id}`);
+            }
+        });
     };
 
     const resetGame = () => {
@@ -158,6 +172,7 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
                 setGameId,
                 loadGame,
                 joinGame,
+                createGameSession,
                 connectionRef,
                 playerColor,
                 setPlayerColor,

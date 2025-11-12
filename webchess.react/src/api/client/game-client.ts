@@ -12,7 +12,7 @@ export async function getActiveGame(): Promise<GameResponseDto | null> {
 }
 
 export async function createGame(): Promise<GameResponseDto> {
-    return await postAsJson<undefined, GameResponseDto>("game/create"); // TODO might need to adjust return types
+    return await postAsJson<undefined, GameResponseDto>("game/create");
 }
 
 export function initSignalRConnection(): HubConnection {
@@ -21,7 +21,7 @@ export function initSignalRConnection(): HubConnection {
             accessTokenFactory: accessTokenFactory
         } as IHttpConnectionOptions)
         .withAutomaticReconnect()
-        .configureLogging(LogLevel.Information)
+        .configureLogging(LogLevel.Warning)
         .build();
 
     return connection;
