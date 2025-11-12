@@ -25,7 +25,7 @@ namespace WebChess.WebApi.SignalR.Hubs {
 			}
 
 			await Clients.GroupExcept(gameId, Context.ConnectionId)
-				.SendAsync("MoveReceived", from, to, promotion, newFen); 
+				.SendAsync("MoveReceived", from, to, promotion, newFen);
 		}
 
 

@@ -22,7 +22,7 @@ const LoginPage: React.FC = () => {
                 navigate("/");
             }
         } catch (e) {
-            setError('Login failed. Please check your credentials.');
+            setError(e instanceof Error ? e.message : 'Login failed. Please check your credentials.');
         }
     };
 

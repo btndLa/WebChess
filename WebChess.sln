@@ -14,8 +14,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "webchess.react", "WebChess.React\webchess.react.esproj", "{F970F506-5D0F-A668-D829-AA1EAA0117A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessLibTest", "ChessLibTest\ChessLibTest.csproj", "{3A66BDA5-1F1C-42EF-ABB1-3CD8B232DA97}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebChess.Shared", "WebChess.Shared\WebChess.Shared.csproj", "{A524ABB0-C214-4C63-A676-AB8648D3AF10}"
 EndProject
 Global
@@ -38,10 +36,6 @@ Global
 		{F970F506-5D0F-A668-D829-AA1EAA0117A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F970F506-5D0F-A668-D829-AA1EAA0117A5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F970F506-5D0F-A668-D829-AA1EAA0117A5}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{3A66BDA5-1F1C-42EF-ABB1-3CD8B232DA97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3A66BDA5-1F1C-42EF-ABB1-3CD8B232DA97}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3A66BDA5-1F1C-42EF-ABB1-3CD8B232DA97}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3A66BDA5-1F1C-42EF-ABB1-3CD8B232DA97}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A524ABB0-C214-4C63-A676-AB8648D3AF10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A524ABB0-C214-4C63-A676-AB8648D3AF10}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A524ABB0-C214-4C63-A676-AB8648D3AF10}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -1,9 +1,8 @@
-import { useState, ReactNode, useRef, useCallback } from "react";
+import { useState, ReactNode, useRef } from "react";
 import { Chess, Square, Move } from "chess.js";
 import { ChessGameContext } from "./ChessGameContext";
 import { HubConnection } from "@microsoft/signalr";
 import { endGame, initSignalRConnection } from "../api/client/game-client";
-import { useUserContext } from "./UserContext";
 import { GameResponseDto } from "../api/models/GameResponseDto";
 
 
@@ -12,10 +11,10 @@ import { GameResponseDto } from "../api/models/GameResponseDto";
 const initialFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 export function ChessGameContextProvider({ children }: { children: ReactNode }) {
-  const chessRef = useRef(new Chess(initialFen));
-  const connectionRef= useRef<HubConnection | null>(null);
-  const [fen, setFen] = useState(initialFen);
-  const [selected, setSelected] = useState<Square | null>(null);
+    const chessRef = useRef(new Chess(initialFen));
+    const connectionRef = useRef<HubConnection | null>(null);
+    const [fen, setFen] = useState(initialFen);
+    const [selected, setSelected] = useState<Square | null>(null);
     const [legalMoves, setLegalMoves] = useState<Square[]>([]);
     const [gameId, setGameId] = useState<string | null>(null);
     const [playerColor, setPlayerColor] = useState<"w" | "b" | null>(null);
@@ -27,7 +26,7 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
 
 
 
-  const turn = chessRef.current.turn() as "w" | "b";
+    const turn = chessRef.current.turn() as "w" | "b";
     const board = chessRef.current.board();
 
     const deselectSquare = () => {
@@ -37,21 +36,21 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
 
     const selectSquare = (square: Square) => {
         if (!isActiveGame) return;
-    const piece = chessRef.current.get(square);
+        const piece = chessRef.current.get(square);
         if (
-      piece &&
-      ((turn === "w" && piece.color === "w") || (turn === "b" && piece.color === "b"))
-    ) {
-      setSelected(square);
-      const moves = (chessRef.current.moves({ square, verbose: true }) as Move[]).map(m => m.to as Square);
+            piece &&
+            ((turn === "w" && piece.color === "w") || (turn === "b" && piece.color === "b"))
+        ) {
+            setSelected(square);
+            const moves = (chessRef.current.moves({ square, verbose: true }) as Move[]).map(m => m.to as Square);
             setLegalMoves(moves);
-    } else if (selected) {
-      makeMove(selected, square);
-    } else {
-      setSelected(null);
-      setLegalMoves([]);
-    }
-  };
+        } else if (selected) {
+            makeMove(selected, square);
+        } else {
+            setSelected(null);
+            setLegalMoves([]);
+        }
+    };
     const handleMoveReceived = (from: string, to: string, promotion?: string, newFen?: string) => {
         const finalFen = newFen === undefined ? promotion : newFen;
         if (!finalFen) return;
@@ -93,7 +92,7 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
             if (chessRef.current.isDraw()) {
                 connectionRef.current?.invoke("EndGame", gameId, "draw")
             } else {
-            connectionRef.current?.invoke("EndGame", gameId, playerColor)
+                connectionRef.current?.invoke("EndGame", gameId, playerColor)
             }
         }
         setSelected(null);
@@ -107,8 +106,8 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
     const loadGame = async (gameData: GameResponseDto) => {
         setGameId(gameData.id);
         setPlayerColor(gameData.playerColor);
-      chessRef.current.load(gameData.fen);
-      setFen(gameData.fen);
+        chessRef.current.load(gameData.fen);
+        setFen(gameData.fen);
         setTakenPieces(gameData.takenPieces);
         setMoveHistory(gameData.moveHistory);
     };
@@ -118,24 +117,24 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
         conn.on("PlayerJoined", () => {
             console.log("Player reconnected");
         })
-      conn.on("MoveReceived", handleMoveReceived);
-      conn.on("GameOver", (winner) => {
-          endGame(id, winner);
-          setIsActiveGame(false);
-          setGameResult(winner);
-      });
-    await conn.start();
-    await conn.invoke("JoinGameGroup", id); //TODO WHen joining to exisitng game, getting a warning
-      connectionRef.current = conn;
-      setGameId(id);
-      setIsActiveGame(true);
+        conn.on("MoveReceived", handleMoveReceived);
+        conn.on("GameOver", (winner) => {
+            endGame(id, winner);
+            setIsActiveGame(false);
+            setGameResult(winner);
+        });
+        await conn.start();
+        await conn.invoke("JoinGameGroup", id); //TODO WHen joining to exisitng game, getting a warning
+        connectionRef.current = conn;
+        setGameId(id);
+        setIsActiveGame(true);
     };
 
-  const resetGame = () => {
-    chessRef.current.reset();
-    setFen(chessRef.current.fen());
-    setSelected(null);
-    setLegalMoves([]);
+    const resetGame = () => {
+        chessRef.current.reset();
+        setFen(chessRef.current.fen());
+        setSelected(null);
+        setLegalMoves([]);
     };
 
     const resign = () => {
@@ -143,36 +142,36 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
         setIsActiveGame(false);
     }
 
-  return (
-    <ChessGameContext.Provider // TODO review what to pass
-      value={{
-        board,
-        fen,
-        turn,
-        selected,
-        legalMoves,
-              selectSquare,
-        deselectSquare,
-        makeMove,
-        resetGame,
-        gameId,
-        setGameId,
-        loadGame,
-        joinGame,
-        connectionRef,
-        playerColor,
-        setPlayerColor,
-        takenPieces,
-        chessRef,
-              promotionMove,
-              moveHistory,
-              resign,
-              isActiveGame,
-              setIsActiveGame,
-              gameResult,
-      }}
-    >
-      {children}
-    </ChessGameContext.Provider>
-  );
+    return (
+        <ChessGameContext.Provider // TODO review what to pass
+            value={{
+                board,
+                fen,
+                turn,
+                selected,
+                legalMoves,
+                selectSquare,
+                deselectSquare,
+                makeMove,
+                resetGame,
+                gameId,
+                setGameId,
+                loadGame,
+                joinGame,
+                connectionRef,
+                playerColor,
+                setPlayerColor,
+                takenPieces,
+                chessRef,
+                promotionMove,
+                moveHistory,
+                resign,
+                isActiveGame,
+                setIsActiveGame,
+                gameResult,
+            }}
+        >
+            {children}
+        </ChessGameContext.Provider>
+    );
 };

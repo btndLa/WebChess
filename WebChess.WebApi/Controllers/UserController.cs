@@ -50,7 +50,7 @@ namespace WebChess.WebApi.Controllers {
 
 			return NoContent();
 		}
-                                                                                                                                                                                                                                                                                                        
+
 		[HttpPost]
 		[Route("refresh")]
 		public async Task<IActionResult> RedeemRefreshToken([FromBody] string refreshToken) {

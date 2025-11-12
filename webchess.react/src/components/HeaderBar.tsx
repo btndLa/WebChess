@@ -4,7 +4,6 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
 import { useNavigate } from 'react-router-dom';
 import { useUserContext } from '../contexts/UserContext';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -19,7 +18,7 @@ const HeaderBar: React.FC = () => { // TODO change these
     return (
         <AppBar position="static" elevation={2}>
             <Toolbar>
-                <Box 
+                <Box
                     onClick={() => navigate('/')}
                     sx={{
                         display: 'flex',
@@ -32,7 +31,7 @@ const HeaderBar: React.FC = () => { // TODO change these
                     }}
                 >
                     <SportsEsportsIcon sx={{ mr: 1, fontSize: 28 }} />
-                    <Typography 
+                    <Typography
                         variant="h6"
                         component="div"
                         sx={{
@@ -47,8 +46,8 @@ const HeaderBar: React.FC = () => { // TODO change these
 
                 {!loggedIn ? (
                     <Box sx={{ display: 'flex', gap: 1 }}>
-                        <Button 
-                            color="inherit" 
+                        <Button
+                            color="inherit"
                             onClick={() => navigate('/login')}
                             startIcon={<LoginIcon />}
                             sx={{
@@ -62,8 +61,8 @@ const HeaderBar: React.FC = () => { // TODO change these
                         >
                             Login
                         </Button>
-                        <Button 
-                            color="inherit" 
+                        <Button
+                            color="inherit"
                             onClick={() => navigate('/register')}
                             startIcon={<PersonAddIcon />}
                             variant="outlined"
@@ -83,9 +82,9 @@ const HeaderBar: React.FC = () => { // TODO change these
                     </Box>
                 ) : (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Typography 
-                            variant="body1" 
-                            sx={{ 
+                        <Typography
+                            variant="body1"
+                            sx={{
                                 display: { xs: 'none', sm: 'block' },
                                 fontWeight: 500,
                                 opacity: 0.9
@@ -93,8 +92,8 @@ const HeaderBar: React.FC = () => { // TODO change these
                         >
                             {userName}
                         </Typography>
-                        <Button 
-                            color="inherit" 
+                        <Button
+                            color="inherit"
                             onClick={() => handleLogout()}
                             startIcon={<LogoutIcon />}
                             variant="outlined"

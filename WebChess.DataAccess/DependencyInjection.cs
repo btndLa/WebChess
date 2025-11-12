@@ -33,7 +33,6 @@ namespace WebChess.DataAccess {
 			services.AddScoped<IUserService, UserService>();
 			services.AddScoped<IGameService, GameService>();
 
-
 			return services;
 		}
 	}

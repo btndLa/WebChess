@@ -3,8 +3,8 @@ import type { GameResponseDto } from "@/api/models/GameResponseDto";
 import { get, postAsJson, postAsJsonWithoutResponse } from "@/api/client/http";
 import { accessTokenFactory } from "@/signalR/accessTokenFactory";
 
-export async function getGame(id: string): Promise<GameResponseDto> {
-    return await get<GameResponseDto>(`game/${id}`);
+export async function getGame(id: string): Promise<GameResponseDto | null> {
+    return await get<GameResponseDto | null>(`game/${id}`);
 }
 
 export async function getActiveGame(): Promise<GameResponseDto | null> {

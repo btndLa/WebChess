@@ -16,7 +16,7 @@ const router = createBrowserRouter([
                 path: "/",
                 element: <HomePage />,
             },
-            {  
+            {
                 path: "/login",
                 element: <LoginPage />,
             },
@@ -31,7 +31,7 @@ const router = createBrowserRouter([
         ],
     },
 ]);
-                
+
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
