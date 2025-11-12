@@ -15,7 +15,7 @@ const GameRedirector: React.FC = () => {
         }
     }, [gameId, location.pathname, navigate, initialized, loggedIn]);
 
-  return null;
+    return null;
 };
 
 export default GameRedirector;

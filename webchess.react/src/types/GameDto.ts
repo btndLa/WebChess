@@ -1,6 +1,6 @@
 export interface GameDto {
-  id: string;
-  whitePlayerId: string;
-  blackPlayerId: string;
-  fen: string;
+    id: string;
+    whitePlayerId: string;
+    blackPlayerId: string;
+    fen: string;
 }

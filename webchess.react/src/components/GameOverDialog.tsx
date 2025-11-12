@@ -1,8 +1,8 @@
-import { 
-    Button, 
-    Dialog, 
-    DialogActions, 
-    DialogContent, 
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
     DialogTitle,
     Box,
     Typography,
@@ -68,8 +68,8 @@ export function GameOverDialog(props: GameOverDialogProps) {
     const resultData = getResultData();
 
     return (
-        <Dialog 
-            open={open} 
+        <Dialog
+            open={open}
             onClose={onClose}
             maxWidth="sm"
             fullWidth
@@ -93,8 +93,8 @@ export function GameOverDialog(props: GameOverDialogProps) {
             <DialogContent sx={{ pt: 3, pb: 2 }}>
                 <Box sx={{ textAlign: 'center' }}>
                     {/* Trophy/Icon Section */}
-                    <Box 
-                        sx={{ 
+                    <Box
+                        sx={{
                             display: 'inline-flex',
                             p: 3,
                             borderRadius: '50%',
@@ -109,9 +109,9 @@ export function GameOverDialog(props: GameOverDialogProps) {
                     </Box>
 
                     {/* Message */}
-                    <Typography 
-                        variant="h6" 
-                        gutterBottom 
+                    <Typography
+                        variant="h6"
+                        gutterBottom
                         fontWeight={600}
                         sx={{ mb: 2 }}
                     >
@@ -119,10 +119,10 @@ export function GameOverDialog(props: GameOverDialogProps) {
                     </Typography>
 
                     {/* Decorative Element */}
-                    <Paper 
+                    <Paper
                         elevation={0}
-                        sx={{ 
-                            p: 2, 
+                        sx={{
+                            p: 2,
                             mt: 3,
                             bgcolor: 'background.default',
                             borderRadius: 2,
@@ -130,7 +130,7 @@ export function GameOverDialog(props: GameOverDialogProps) {
                         }}
                     >
                         <Typography variant="body2" color="text.secondary">
-                            {winner === "draw" 
+                            {winner === "draw"
                                 ? "Both players demonstrated great skill and strategy."
                                 : "Thank you for playing! Start a new game to play again."
                             }
@@ -142,22 +142,22 @@ export function GameOverDialog(props: GameOverDialogProps) {
             <Divider />
 
             <DialogActions sx={{ px: 3, py: 2, gap: 1 }}>
-                <Button 
+                <Button
                     onClick={onClose}
                     color="inherit"
                     startIcon={<CloseIcon />}
-                    sx={{ 
+                    sx={{
                         textTransform: 'none',
                         px: 2
                     }}
                 >
                     Close
                 </Button>
-                <Button 
+                <Button
                     onClick={handleGoHome}
                     variant="contained"
                     startIcon={<HomeIcon />}
-                    sx={{ 
+                    sx={{
                         px: 3,
                         textTransform: 'none',
                         borderRadius: 2,

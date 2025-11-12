@@ -11,19 +11,19 @@ export default function MoveHistoryTable() {
         movePairs.push({
             moveNumber: i / 2 + 1,
             white: moveHistory[i],
-            black: moveHistory[i + 1] || "", 
+            black: moveHistory[i + 1] || "",
         });
     }
-    
+
     useEffect(() => {
         if (tableContainerRef.current) {
             tableContainerRef.current.scrollTop = tableContainerRef.current.scrollHeight;
         }
     }, [moveHistory]);
-    
+
     return (
         <Paper sx={{ width: '100%', height: '100%', maxHeight: '400px', display: 'flex', flexDirection: 'column' }}>
-            <TableContainer 
+            <TableContainer
                 ref={tableContainerRef}
                 sx={{ maxHeight: '400px', overflow: 'auto' }}
             >

@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { useUserContext } from '../contexts/UserContext';
-import { 
-    Box, 
-    Button, 
-    Container, 
-    Typography, 
-    Paper, 
-    Card, 
-    CardContent, 
+import {
+    Box,
+    Button,
+    Container,
+    Typography,
+    Paper,
+    Card,
+    CardContent,
     CardActions,
-    Divider 
+    Divider
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { CreateGameDialog } from '../components/CreateGameDialog';
@@ -28,11 +28,11 @@ const HomePage: React.FC = () => {
                 <>
                     {/* Welcome Section */}
                     <Box sx={{ textAlign: 'center', mb: 6 }}>
-                        <Typography 
-                            variant="h3" 
-                            component="h1" 
-                            gutterBottom 
-                            sx={{ 
+                        <Typography
+                            variant="h3"
+                            component="h1"
+                            gutterBottom
+                            sx={{
                                 fontWeight: 700,
                                 background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
                                 backgroundClip: 'text',
@@ -49,9 +49,9 @@ const HomePage: React.FC = () => {
                     <Grid container spacing={4} justifyContent="center">
                         {/* Create Game Card */}
                         <Grid size={{ xs: 12, sm: 6, md: 5 }}>
-                            <Card 
+                            <Card
                                 elevation={3}
-                                sx={{ 
+                                sx={{
                                     height: '100%',
                                     display: 'flex',
                                     flexDirection: 'column',
@@ -63,8 +63,8 @@ const HomePage: React.FC = () => {
                                 }}
                             >
                                 <CardContent sx={{ flexGrow: 1, textAlign: 'center', py: 4 }}>
-                                    <Box 
-                                        sx={{ 
+                                    <Box
+                                        sx={{
                                             display: 'inline-flex',
                                             p: 2,
                                             borderRadius: '50%',
@@ -82,12 +82,12 @@ const HomePage: React.FC = () => {
                                     </Typography>
                                 </CardContent>
                                 <CardActions sx={{ justifyContent: 'center', pb: 3 }}>
-                                    <Button 
-                                        variant="contained" 
+                                    <Button
+                                        variant="contained"
                                         size="large"
                                         onClick={() => setCreateOpen(true)}
                                         startIcon={<SportsEsportsIcon />}
-                                        sx={{ 
+                                        sx={{
                                             px: 4,
                                             py: 1.5,
                                             borderRadius: 2,
@@ -103,9 +103,9 @@ const HomePage: React.FC = () => {
 
                         {/* Join Game Card */}
                         <Grid size={{ xs: 12, sm: 6, md: 5 }}>
-                            <Card 
+                            <Card
                                 elevation={3}
-                                sx={{ 
+                                sx={{
                                     height: '100%',
                                     display: 'flex',
                                     flexDirection: 'column',
@@ -117,8 +117,8 @@ const HomePage: React.FC = () => {
                                 }}
                             >
                                 <CardContent sx={{ flexGrow: 1, textAlign: 'center', py: 4 }}>
-                                    <Box 
-                                        sx={{ 
+                                    <Box
+                                        sx={{
                                             display: 'inline-flex',
                                             p: 2,
                                             borderRadius: '50%',
@@ -136,13 +136,13 @@ const HomePage: React.FC = () => {
                                     </Typography>
                                 </CardContent>
                                 <CardActions sx={{ justifyContent: 'center', pb: 3 }}>
-                                    <Button 
-                                        variant="contained" 
+                                    <Button
+                                        variant="contained"
                                         color="secondary"
                                         size="large"
                                         onClick={() => setJoinOpen(true)}
                                         startIcon={<PersonAddIcon />}
-                                        sx={{ 
+                                        sx={{
                                             px: 4,
                                             py: 1.5,
                                             borderRadius: 2,
@@ -158,11 +158,11 @@ const HomePage: React.FC = () => {
                     </Grid>
 
                     {/* Info Section */}
-                    <Paper 
-                        elevation={2} 
-                        sx={{ 
-                            mt: 6, 
-                            p: 4, 
+                    <Paper
+                        elevation={2}
+                        sx={{
+                            mt: 6,
+                            p: 4,
                             textAlign: 'center',
                             bgcolor: 'background.default',
                             borderRadius: 2

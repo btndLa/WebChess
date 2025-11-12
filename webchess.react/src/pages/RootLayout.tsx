@@ -3,20 +3,20 @@ import HeaderBar from "../components/HeaderBar";
 import { ChessGameContextProvider } from "../contexts/ChessGameContextProvider";
 import { UserContextProvider } from "../contexts/UserContextProvider";
 
-export function RootLayout(){
+export function RootLayout() {
     return (
         <UserContextProvider>
             <ChessGameContextProvider>
-                            <HeaderBar></HeaderBar>
-                    <main>
+                <HeaderBar></HeaderBar>
+                <main>
                     <Outlet />
-                    </main>
+                </main>
                 <footer>
-                {/* TODO*/}
-                    </footer>
+                    {/* TODO*/}
+                </footer>
             </ChessGameContextProvider>
         </UserContextProvider>
-  );
+    );
 };
 
 export default RootLayout;
