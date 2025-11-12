@@ -28,7 +28,7 @@ namespace WebChess.WebApi.Controllers {
 
 			var gameDto = _mapper.Map<GameResponseDto>(game);
 			gameDto.PlayerColor = game.WhitePlayerId == userId ? "w" : "b";
-			
+
 			return Ok(gameDto);
 		}
 
@@ -83,8 +83,7 @@ namespace WebChess.WebApi.Controllers {
 
 		[HttpPost("end")]
 		[Authorize]
-		public async Task<IActionResult> EndGame([FromBody] EndGameRequestDto request)
-		{
+		public async Task<IActionResult> EndGame([FromBody] EndGameRequestDto request) {
 			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 			if (userId == null) return Unauthorized();
 			var game = await _gameService.EndGameAsync(request.GameId, request.Winner);
@@ -92,7 +91,7 @@ namespace WebChess.WebApi.Controllers {
 
 			var gameDto = _mapper.Map<GameResponseDto>(game);
 			gameDto.PlayerColor = game.WhitePlayerId == userId ? "w" : "b";
-			
+
 			return Ok(gameDto);
 		}
 

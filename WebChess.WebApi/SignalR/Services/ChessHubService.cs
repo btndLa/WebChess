@@ -11,4 +11,3 @@ namespace WebChess.WebApi.SignalR.Services {
 		}
 	}
 }
-	

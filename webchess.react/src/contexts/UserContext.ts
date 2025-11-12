@@ -1,5 +1,5 @@
-import { createContext, useContext} from "react";
-import  { LoginRequestDto } from "@/api/models/LoginRequestDto";
+import { createContext, useContext } from "react";
+import { LoginRequestDto } from "@/api/models/LoginRequestDto";
 
 export interface UserInfo {
     userId: string;
@@ -9,7 +9,7 @@ export interface UserInfo {
     refreshToken: string;
 }
 
-export interface UserContextModel{
+export interface UserContextModel {
     userId: string | null;
     userName: string | null;
     loggedIn: boolean;

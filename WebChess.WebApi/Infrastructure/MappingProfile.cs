@@ -2,7 +2,7 @@
 using WebChess.DataAccess.Models;
 using WebChess.Shared.Models;
 namespace WebChess.WebApi.Infrastructure {
-	public class MappingProfile : Profile{
+	public class MappingProfile : Profile {
 
 		public MappingProfile() {
 
@@ -12,8 +12,8 @@ namespace WebChess.WebApi.Infrastructure {
 
 			CreateMap<User, UserResponseDto>(MemberList.Destination);
 
-            CreateMap<Game, GameResponseDto>(MemberList.Destination)
-                .ForMember(dest => dest.PlayerColor, opt => opt.Ignore());
+			CreateMap<Game, GameResponseDto>(MemberList.Destination)
+				.ForMember(dest => dest.PlayerColor, opt => opt.Ignore());
 		}
 
 	}

@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 
 export function UserContextProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<UserInfo | null>(null);
-    const [authError, setAuthError] = useState<string| null>(null);
+    const [authError, setAuthError] = useState<string | null>(null);
     const [initialized, setInitialized] = useState<boolean>(false);
     const loggedIn = user !== null;
     const navigate = useNavigate();
@@ -23,8 +23,8 @@ export function UserContextProvider({ children }: { children: ReactNode }) {
             refreshToken: response.refreshToken,
             authTokenExpiration: getJwtExpiration(response.authToken)
         };
-    localStorage.setItem('user', JSON.stringify(user));
-    setUser(user);
+        localStorage.setItem('user', JSON.stringify(user));
+        setUser(user);
     }, []);
 
     const redeemToken = useCallback(async (refreshToken: string) => {

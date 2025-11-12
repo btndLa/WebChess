@@ -2,8 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using WebChess.WebApi.Models;
 
-namespace WebChess.WebApi.Controllers
-{
+namespace WebChess.WebApi.Controllers {
 
 	[ApiController]
 	[Route("api/health")]
@@ -13,18 +12,15 @@ namespace WebChess.WebApi.Controllers
 			return Ok("OK");
 		}
 	}
-	public class HomeController : Controller
-    {
-        private readonly ILogger<HomeController> _logger;
+	public class HomeController : Controller {
+		private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
+		public HomeController(ILogger<HomeController> logger) {
+			_logger = logger;
+		}
 
-        public IActionResult Index()
-        {
-            return Ok();
-        }
-    }
+		public IActionResult Index() {
+			return Ok();
+		}
+	}
 }

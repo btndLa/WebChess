@@ -1,5 +1,4 @@
-export interface GameResponseDto
-{
+export interface GameResponseDto{
     id: string 
     whitePlayerId: string
     blackPlayerId: string
