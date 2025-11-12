@@ -4,7 +4,7 @@ import { useChessGameContext } from '@/contexts/ChessGameContext';
 import { PieceSymbol } from 'chess.js';
 import { PIECE_IMAGES } from '@/utils/pieces';
 
-export const PromotionDialog: React.FC = () => {
+export function PromotionDialog() {
     const { promotionMove, makeMove, turn } = useChessGameContext();
 
     if (!promotionMove) {

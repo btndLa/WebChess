@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import HeaderBar from "../components/HeaderBar";
+import { HeaderBar } from "../components/HeaderBar";
 import { ChessGameContextProvider } from "../contexts/ChessGameContextProvider";
 import { UserContextProvider } from "../contexts/UserContextProvider";
 

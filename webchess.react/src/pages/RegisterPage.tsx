@@ -19,7 +19,7 @@ const registerFormValidator = yup.object({
     username: yup.string().min(2, 'Username must be at least 2 characters').required('Username is required'),
 });
 
-const RegisterPage: React.FC = () => {
+export function RegisterPage() {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [username, setUsername] = useState<string>('');
@@ -97,5 +97,3 @@ const RegisterPage: React.FC = () => {
         </Box>
     );
 };
-
-export default RegisterPage;

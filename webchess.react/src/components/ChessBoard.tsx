@@ -11,7 +11,7 @@ const ranks = ["1", "2", "3", "4", "5", "6", "7", "8"];
 type ChessPiece = { square: string; type: string; color: "w" | "b" };
 
 
-const ChessBoard: React.FC = () => {
+export function ChessBoard(){
     const {
         board,
         turn,
@@ -147,5 +147,3 @@ const ChessBoard: React.FC = () => {
         </>
     );
 };
-
-export default ChessBoard;

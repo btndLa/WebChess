@@ -17,7 +17,7 @@ import { JoinGameDialog } from '../components/JoinGameDialog';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
-const HomePage: React.FC = () => {
+export  function HomePage() {
     const { loggedIn, userName } = useUserContext();
     const [createOpen, setCreateOpen] = useState(false);
     const [joinOpen, setJoinOpen] = useState(false);
@@ -207,5 +207,3 @@ const HomePage: React.FC = () => {
         </Container>
     );
 };
-
-export default HomePage;

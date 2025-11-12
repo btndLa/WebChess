@@ -18,10 +18,11 @@ import ShareIcon from '@mui/icons-material/Share';
 import Divider from '@mui/material/Divider';
 import { useChessGameContext } from "@/contexts/ChessGameContext";
 
-export const CreateGameDialog: React.FC<{
+interface CreateGameDialogProps {
     open: boolean;
     onClose: () => void;
-}> = ({ open, onClose }) => {
+}
+export function CreateGameDialog({ open, onClose }: CreateGameDialogProps) {
     const [loading, setLoading] = useState(false);
     const [copied, setCopied] = useState(false);
     const [error, setError] = useState<string | null>(null);

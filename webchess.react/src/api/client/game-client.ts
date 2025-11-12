@@ -28,5 +28,5 @@ export function initSignalRConnection(): HubConnection {
 }
 
 export async function endGame(gameId: string, winner: string) : Promise<void> {
-    return await postAsJsonWithoutResponse<{ gameId: string, winner: string }>("game/end", { gameId, winner }); //TODO maybe add DTO here
+    return await postAsJsonWithoutResponse<{ gameId: string, winner: string }>("game/end", { gameId, winner });
 }

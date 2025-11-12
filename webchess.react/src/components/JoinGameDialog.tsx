@@ -17,10 +17,12 @@ import Alert from '@mui/material/Alert';
 import { useNavigate } from "react-router-dom";
 import { useChessGameContext } from "../contexts/ChessGameContext";
 
-export const JoinGameDialog: React.FC<{
+interface JoinGameDialogProps {
     open: boolean;
     onClose: () => void;
-}> = ({ open, onClose }) => {
+}
+
+export function JoinGameDialog({ open, onClose }: JoinGameDialogProps) {
     const [gameCode, setGameCode] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);

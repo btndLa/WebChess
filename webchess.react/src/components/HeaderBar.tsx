@@ -11,7 +11,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 
-const HeaderBar: React.FC = () => { // TODO change these
+export function HeaderBar(){
     const navigate = useNavigate();
     const { loggedIn, handleLogout, userName } = useUserContext();
 
@@ -121,5 +121,3 @@ const HeaderBar: React.FC = () => { // TODO change these
         </AppBar>
     );
 };
-
-export default HeaderBar;

@@ -3,7 +3,7 @@ import { TextField, Button, Box, Typography, Alert } from '@mui/material';
 import { useUserContext } from '../contexts/UserContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-const LoginPage: React.FC = () => {
+export function LoginPage() {
     const userContext = useUserContext();
     const navigate = useNavigate();
     const location = useLocation();
@@ -55,5 +55,3 @@ const LoginPage: React.FC = () => {
         </Box>
     );
 };
-
-export default LoginPage;

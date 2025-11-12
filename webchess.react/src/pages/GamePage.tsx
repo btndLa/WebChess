@@ -1,6 +1,6 @@
 ﻿import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import ChessBoard from "@/components/ChessBoard";
+import { ChessBoard } from "@/components/ChessBoard";
 import { getGame } from "@/api/client/game-client";
 import type { GameResponseDto } from "@/api/models/GameResponseDto";
 import { useChessGameContext } from "@/contexts/ChessGameContext";
@@ -17,7 +17,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import ErrorIcon from '@mui/icons-material/Error';
 import CircleIcon from '@mui/icons-material/Circle';
 
-const GamePage: React.FC = () => {
+export function GamePage() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const [game, setGame] = useState<GameResponseDto | null>(null);
@@ -313,5 +313,3 @@ const GamePage: React.FC = () => {
         </Box>
     );
 };
-
-export default GamePage;

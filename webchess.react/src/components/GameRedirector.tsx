@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useChessGameContext } from "@/contexts/ChessGameContext";
 import { useUserContext } from "../contexts/UserContext";
 
-const GameRedirector: React.FC = () => {
+export function GameRedirector() {
     const { gameId } = useChessGameContext();
     const { loggedIn, initialized } = useUserContext();
     const navigate = useNavigate();
@@ -17,5 +17,3 @@ const GameRedirector: React.FC = () => {
 
     return null;
 };
-
-export default GameRedirector;
