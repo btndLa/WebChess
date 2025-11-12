@@ -79,7 +79,7 @@ async function throwErrorIfNotOk(res: Response) {
     try {
         responseObject = await res.json();
     } catch {
-        throw new Error(`Request failed with status ${res.status} (${res.statusText})`);
+        throw new HttpError(res.status, `The server returned: ${res.statusText} (${res.status})`);
     }
 
     if (!responseObject?.title) {
@@ -88,6 +88,7 @@ async function throwErrorIfNotOk(res: Response) {
 
     const problemDetails = responseObject as ProblemDetails;
     if (res.status === 400 && problemDetails.errors) {
+
         const validationErrords: Record<string, string> = Object.create(null);
         for (const fieldName in problemDetails.errors) {
             const fieldNameCamelCase = fieldName.charAt(0).toLowerCase() + fieldName.slice(1);
