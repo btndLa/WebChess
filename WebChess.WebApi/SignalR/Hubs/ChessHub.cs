@@ -10,7 +10,6 @@ namespace WebChess.WebApi.SignalR.Hubs {
 		private readonly IChessHubService _hubService;
 		private readonly IGameService _gameService;
 		private static readonly ConcurrentDictionary<string, HashSet<string>> _groupMembers = new();
-		//TODO set loglevel
 
 		public ChessHub(IChessHubService hubService, IGameService gameService) {
 			_hubService = hubService;
@@ -42,7 +41,7 @@ namespace WebChess.WebApi.SignalR.Hubs {
 				.SendAsync("PlayerJoined");
 		}
 
-		public async Task EndGame(string gameId, string winner) { //TODO namings
+		public async Task EndGame(string gameId, string winner) {
 			await Clients.Group(gameId).SendAsync("GameOver", winner);
 			await Groups.RemoveFromGroupAsync(Context.ConnectionId, gameId);
 		}

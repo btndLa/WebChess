@@ -16,7 +16,7 @@ import Divider from '@mui/material/Divider';
 import Alert from '@mui/material/Alert';
 import { useNavigate } from "react-router-dom";
 import { useChessGameContext } from "../contexts/ChessGameContext";
-
+import { joinGame } from "../api/client/game-client";
 interface JoinGameDialogProps {
     open: boolean;
     onClose: () => void;
@@ -27,35 +27,26 @@ export function JoinGameDialog({ open, onClose }: JoinGameDialogProps) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
-    const { joinGame, setPlayerColor, loadGame, setIsActiveGame } = useChessGameContext();// TODO add error messages
+    const { joinGameSession, setPlayerColor, loadGame, setIsActiveGame } = useChessGameContext();
 
     const handleJoin = async () => {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${import.meta.env.VITE_APP_API_BASEURL}/game/join`, { // TODO Move this to the provider
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!).authToken : ""}`
-                },
-                body: JSON.stringify({ gameId: gameCode.trim() })
-            });
+            const data = await joinGame(gameCode.trim());
 
-            if (!res.ok) {
-                const errorText = await res.text();
-                throw new Error(errorText || "Invalid or unavailable game code");
+            if (!data) {
+                const errorText = data|| "Invalid or unavailable game code";
+                throw new Error(errorText);
             }
-
-            const data = await res.json();
             setPlayerColor(data.playerColor);
-            await joinGame(data.id);
+            await joinGameSession(data.id);
             loadGame(data);
             setIsActiveGame(true);
             navigate(`/game/${data.id}`);
             onClose();
-        } catch (e) {
-            setError(e instanceof Error ? e.message || "Failed to join game. Please check the code and try again." : "Failed to join game. Please check the code and try again.");
+        } catch {
+            setError("Failed to join game. Please check the code and try again");
         } finally {
             setLoading(false);
         }

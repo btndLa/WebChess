@@ -15,6 +15,10 @@ export async function createGame(): Promise<GameResponseDto> {
     return await postAsJson<undefined, GameResponseDto>("game/create");
 }
 
+export async function joinGame(gameId: string): Promise<GameResponseDto> {
+    return await postAsJson<{ gameId: string }, GameResponseDto>("game/join", { gameId });
+}
+
 export function initSignalRConnection(): HubConnection {
     const connection = new HubConnectionBuilder()
         .withUrl(`${import.meta.env.VITE_APP_SIGNALR_BASEURL}/chessHub`, {

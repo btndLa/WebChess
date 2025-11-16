@@ -7,8 +7,6 @@ import { GameResponseDto } from "../api/models/GameResponseDto";
 import { useNavigate } from "react-router-dom";
 
 
-//TODO transfer to always update and receive from backend
-
 const initialFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 export function ChessGameContextProvider({ children }: { children: ReactNode }) {
@@ -73,7 +71,7 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
         setLegalMoves([]);
     };
 
-    const makeMove = (from: Square, to: Square, promotion?: string) => { // TODO consider useCallbacks
+    const makeMove = (from: Square, to: Square, promotion?: string) => {
         if (!isActiveGame) return;
         const piece = chessRef.current.get(from);
         const isPromotion = (piece?.type === 'p') && ((piece.color === 'w' && to[1] === '8') || (piece.color === 'b' && to[1] === '1'));
@@ -113,7 +111,7 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
         setMoveHistory(gameData.moveHistory);
     };
 
-    const joinGame = async (id: string) => {
+    const joinGameSession = async (id: string) => {
         const conn = initSignalRConnection();
         conn.on("PlayerJoined", () => {
             console.log("Player reconnected");
@@ -126,7 +124,7 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
             setGameId(null);
         });
         await conn.start();
-        await conn.invoke("JoinGameGroup", id); //TODO WHen joining to exisitng game, getting a warning
+        await conn.invoke("JoinGameGroup", id);
         connectionRef.current = conn;
         setGameId(id);
         setIsActiveGame(true);
@@ -134,7 +132,7 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
 
     const createGameSession = async () => {
         const gameData = await createGame();
-        await joinGame(gameData.id);
+        await joinGameSession(gameData.id);
         loadGame(gameData);
         connectionRef.current?.on("PlayerJoined", () => {
             if (gameData.status === "waiting") {
@@ -157,7 +155,7 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
     }
 
     return (
-        <ChessGameContext.Provider // TODO review what to pass
+        <ChessGameContext.Provider
             value={{
                 board,
                 fen,
@@ -171,7 +169,7 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
                 gameId,
                 setGameId,
                 loadGame,
-                joinGame,
+                joinGameSession,
                 createGameSession,
                 connectionRef,
                 playerColor,

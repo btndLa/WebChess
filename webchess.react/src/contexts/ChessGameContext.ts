@@ -11,13 +11,13 @@ export interface ChessGameContextType {
     selected: Square | null;
     legalMoves: Square[];
     selectSquare: (square: Square) => void;
-    deselectSquare: () => void; //TODO maybe error
+    deselectSquare: () => void;
     makeMove: (from: Square, to: Square, promotion?: string) => void;
     resetGame: () => void;
     gameId: string | null;
     setGameId: (id: string | null) => void;
     loadGame: (gameData: GameResponseDto) => Promise<void>;
-    joinGame: (id: string) => void;
+    joinGameSession: (id: string) => void;
     createGameSession: () => Promise<void>;
     connectionRef: React.RefObject<HubConnection | null>;
     playerColor: "w" | "b" | null;

@@ -16,6 +16,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import InfoIcon from '@mui/icons-material/Info';
 import ErrorIcon from '@mui/icons-material/Error';
 import CircleIcon from '@mui/icons-material/Circle';
+import { useUserContext } from "@/contexts/UserContext";
 
 export function GamePage() {
     const { id } = useParams<{ id: string }>();
@@ -24,7 +25,8 @@ export function GamePage() {
     const [loading, setLoading] = useState(true);
     const [open, setOpen] = useState(false);
     const [gameOverOpen, setGameOverOpen] = useState(false);
-    const { joinGame, gameId, chessRef, takenPieces, playerColor, resign, loadGame, isActiveGame, gameResult } = useChessGameContext();
+    const { joinGameSession, gameId, chessRef, takenPieces, playerColor, resign, loadGame, isActiveGame, gameResult } = useChessGameContext();
+    const { userId } = useUserContext();
     const initializedRef = useRef(false);
 
     useEffect(() => {
@@ -40,8 +42,10 @@ export function GamePage() {
 
                 if (!gameId) {
                     loadGame(fetchedGame);
-                    if (fetchedGame.status === "active" || fetchedGame.status === "waiting") {
-                        joinGame(fetchedGame.id);
+                    
+                    if ((fetchedGame.status === "active" || fetchedGame.status === "waiting") &&
+                        (fetchedGame.whitePlayerId === userId || fetchedGame.blackPlayerId === userId)) {
+                        joinGameSession(fetchedGame.id);
                     }
                 }
                 setGame(fetchedGame); // TODO load game only if user was one of the players
@@ -56,7 +60,7 @@ export function GamePage() {
                 }
             })
             .finally(() => setLoading(false));
-    }, [id, gameId, navigate, loadGame, joinGame]);
+    }, [id, gameId, navigate, loadGame, joinGameSession]);
 
     const wasActiveRef = useRef(isActiveGame);
     useEffect(() => {
