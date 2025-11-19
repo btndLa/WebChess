@@ -16,7 +16,6 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import InfoIcon from '@mui/icons-material/Info';
 import ErrorIcon from '@mui/icons-material/Error';
 import CircleIcon from '@mui/icons-material/Circle';
-import { useUserContext } from "@/contexts/UserContext";
 
 export function GamePage() {
     const { id } = useParams<{ id: string }>();
@@ -26,7 +25,6 @@ export function GamePage() {
     const [open, setOpen] = useState(false);
     const [gameOverOpen, setGameOverOpen] = useState(false);
     const { joinGameSession, gameId, chessRef, takenPieces, playerColor, resign, loadGame, isActiveGame, gameResult } = useChessGameContext();
-    const { userId } = useUserContext();
     const initializedRef = useRef(false);
 
     useEffect(() => {
@@ -42,13 +40,11 @@ export function GamePage() {
 
                 if (!gameId) {
                     loadGame(fetchedGame);
-                    
-                    if ((fetchedGame.status === "active" || fetchedGame.status === "waiting") &&
-                        (fetchedGame.whitePlayerId === userId || fetchedGame.blackPlayerId === userId)) {
+                    if (fetchedGame.status === "active" || fetchedGame.status === "waiting") {
                         joinGameSession(fetchedGame.id);
                     }
                 }
-                setGame(fetchedGame); // TODO load game only if user was one of the players
+                setGame(fetchedGame);
             })
             .catch((err) => {
                 if (err.message === "Forbidden") {

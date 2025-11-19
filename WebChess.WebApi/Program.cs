@@ -52,7 +52,6 @@ builder.Services.AddSwaggerGen(c => {
 });
 builder.Services.AddAutoMapper();
 
-builder.Services.AddSignalRServices();
 builder.Services.AddDataAccess(builder.Configuration);
 
 var jwtSection = builder.Configuration.GetSection("JwtSettings");

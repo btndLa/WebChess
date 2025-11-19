@@ -3,16 +3,13 @@ using Microsoft.AspNetCore.SignalR;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using WebChess.DataAccess.Services;
-using WebChess.WebApi.SignalR.Services;
 
 namespace WebChess.WebApi.SignalR.Hubs {
 	public class ChessHub : Hub {
-		private readonly IChessHubService _hubService;
 		private readonly IGameService _gameService;
 		private static readonly ConcurrentDictionary<string, HashSet<string>> _groupMembers = new();
 
-		public ChessHub(IChessHubService hubService, IGameService gameService) {
-			_hubService = hubService;
+		public ChessHub(IGameService gameService) {
 			_gameService = gameService;
 		}
 
