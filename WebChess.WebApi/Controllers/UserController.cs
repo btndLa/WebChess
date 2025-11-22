@@ -45,7 +45,6 @@ namespace WebChess.WebApi.Controllers {
 		[Route("logout")]
 		[Authorize]
 		public async Task<IActionResult> Logout() {
-			Console.WriteLine("Logout");
 			await _userService.LogoutAsync();
 
 			return NoContent();

@@ -69,8 +69,6 @@ namespace WebChess.DataAccess.Services {
 
 		public async Task<User?> GetCurrentUserAsync() {
 			var userId = GetCurrentUserId();
-			Console.WriteLine("userId");
-			Console.WriteLine(userId);
 			if (userId == null)
 				return null;
 
@@ -79,8 +77,6 @@ namespace WebChess.DataAccess.Services {
 
 		public string? GetCurrentUserId() {
 			var id = _httpContextAccessor.HttpContext?.User.FindFirstValue("id");
-			Console.WriteLine("id");
-			Console.WriteLine(id);
 			if (id == null)
 				return null;
 
@@ -89,8 +85,6 @@ namespace WebChess.DataAccess.Services {
 
 		public async Task LogoutAsync() {
 			var user = await GetCurrentUserAsync();
-			Console.WriteLine("user");
-			Console.WriteLine(user);
 			if (user == null)
 				return;
 
