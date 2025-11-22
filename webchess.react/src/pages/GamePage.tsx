@@ -306,6 +306,7 @@ export function GamePage() {
                     <GameOverDialog
                         open={gameOverOpen}
                         winner={gameResult}
+                        playerColor={playerColor}
                         onClose={() => setGameOverOpen(false)}
                     />
                 </Box>

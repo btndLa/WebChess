@@ -10,54 +10,50 @@ import {
     Paper
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import HandshakeIcon from '@mui/icons-material/Handshake';
 import HomeIcon from '@mui/icons-material/Home';
 import CloseIcon from '@mui/icons-material/Close';
 
 export interface GameOverDialogProps {
     open: boolean;
     winner: string | null;
+    playerColor: "w" | "b" | null;
     onClose: () => void;
 }
 
 export function GameOverDialog(props: GameOverDialogProps) {
-    const { onClose, open, winner } = props;
+    const { onClose, open, winner, playerColor } = props;
     const navigate = useNavigate();
 
     const getResultData = () => {
+        const didPlayerWin = winner === playerColor;
+        
         if (winner === "draw") {
             return {
                 title: "Game Drawn",
                 message: "The game ended in a draw. Well played by both sides!",
-                icon: <HandshakeIcon sx={{ fontSize: 80 }} />,
-                color: "#ed6c02",
-                bgColor: "warning.light"
+                color: "#000000",
+                bgColor: "warning.light",
+                subMessage: "Both players demonstrated great skill and strategy."
             };
-        } else if (winner === "w") {
+        } else if (didPlayerWin) {
+            // Player won
             return {
-                title: "White Wins!",
-                message: "Congratulations! White has won the game.",
-                icon: <EmojiEventsIcon sx={{ fontSize: 80 }} />,
-                color: "#2196f3",
-                bgColor: "primary.light"
+                title: "Victory!",
+                message: "Congratulations! You won the game!",
+                color: "#1b5e20",
+                bgColor: "success.light",
+                subMessage: "Excellent play! Your strategy led you to victory."
             };
-        } else if (winner === "b") {
+        } else {
+            // Player lost
             return {
-                title: "Black Wins!",
-                message: "Congratulations! Black has won the game.",
-                icon: <EmojiEventsIcon sx={{ fontSize: 80 }} />,
-                color: "#424242",
-                bgColor: "grey.300"
+                title: "Defeat",
+                message: `${winner === "w" ? "White" : "Black"} wins the game.`,
+                color: "#b71c1c",
+                bgColor: "error.light",
+                subMessage: "Better luck next time! Learn from this game and come back stronger."
             };
         }
-        return {
-            title: "Game Over",
-            message: "The game has ended.",
-            icon: <HandshakeIcon sx={{ fontSize: 80 }} />,
-            color: "#757575",
-            bgColor: "grey.200"
-        };
     };
 
     const handleGoHome = () => {
@@ -92,20 +88,27 @@ export function GameOverDialog(props: GameOverDialogProps) {
 
             <DialogContent sx={{ pt: 3, pb: 2 }}>
                 <Box sx={{ textAlign: 'center' }}>
-                    {/* Trophy/Icon Section */}
+                    {/* Colored Badge */}
                     <Box
                         sx={{
                             display: 'inline-flex',
-                            p: 3,
-                            borderRadius: '50%',
+                            px: 4,
+                            py: 2,
+                            borderRadius: 2,
                             bgcolor: resultData.bgColor,
                             mb: 3,
                             boxShadow: 2
                         }}
                     >
-                        <Box sx={{ color: resultData.color }}>
-                            {resultData.icon}
-                        </Box>
+                        <Typography
+                            variant="h3"
+                            sx={{
+                                fontWeight: 700,
+                                color: resultData.color
+                            }}
+                        >
+                            {resultData.title}
+                        </Typography>
                     </Box>
 
                     {/* Message */}
@@ -130,10 +133,7 @@ export function GameOverDialog(props: GameOverDialogProps) {
                         }}
                     >
                         <Typography variant="body2" color="text.secondary">
-                            {winner === "draw"
-                                ? "Both players demonstrated great skill and strategy."
-                                : "Thank you for playing! Start a new game to play again."
-                            }
+                            {resultData.subMessage}
                         </Typography>
                     </Paper>
                 </Box>
