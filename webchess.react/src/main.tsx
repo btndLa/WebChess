@@ -30,7 +30,7 @@ const router = createHashRouter([
             },
         ],
     },
-], { basename: "/WebChess" });
+]);
                 
 
 createRoot(document.getElementById('root')!).render(
