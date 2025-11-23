@@ -53,6 +53,8 @@ pnpm-lock.yaml
 build/
 wwwroot/dist/
 wwwroot/node_modules/
+webchess.react/dist/
+
 
 # Environment files
 .env

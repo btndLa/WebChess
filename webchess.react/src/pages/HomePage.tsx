@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useUserContext } from '../contexts/UserContext';
 import {
     Box,

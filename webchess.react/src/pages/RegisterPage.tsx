@@ -1,4 +1,4 @@
-import React, { useState, FormEvent } from 'react';
+import { useState, FormEvent } from 'react';
 import { TextField, Button, Box, Typography, Alert } from '@mui/material';
 import { createUser } from '../api/client/users-client';
 import * as yup from "yup";

@@ -1,5 +1,4 @@
-﻿import React from 'react';
-import { Dialog, DialogTitle, DialogContent, Button, Stack, Box } from '@mui/material';
+﻿import { Dialog, DialogTitle, DialogContent, Button, Stack, Box } from '@mui/material';
 import { useChessGameContext } from '@/contexts/ChessGameContext';
 import { PieceSymbol } from 'chess.js';
 import { PIECE_IMAGES } from '@/utils/pieces';

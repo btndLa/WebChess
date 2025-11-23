@@ -5,8 +5,6 @@ export class ServerSideValidationError extends HttpError {
 
     constructor(status: number, message: string, validationErrors: Record<string, string>) {
         super(status, message);
-        //this.validationErrors = validationErrors;
-        //TODO validationErrors
-        console.log(validationErrors);
+        this.validationErrors = validationErrors;
     }
 }
