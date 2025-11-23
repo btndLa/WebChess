@@ -115,16 +115,42 @@ export function ChessGameContextProvider({ children }: { children: ReactNode }) 
         const conn = initSignalRConnection();
         conn.on("PlayerJoined", () => {
             console.log("Player reconnected");
-        })
+        });
+        
         conn.on("MoveReceived", handleMoveReceived);
+        
         conn.on("GameOver", (winner) => {
             endGame(id, winner);
             setIsActiveGame(false);
             setGameResult(winner);
             setGameId(null);
         });
+        
+        conn.onreconnected(async (connectionId) => {
+            console.log(`SignalR reconnected with connection ID: ${connectionId}`);
+            try {
+                await conn.invoke("JoinGameGroup", id);
+                console.log("Successfully rejoined game group after reconnection");
+            } catch (error) {
+                console.error("Failed to rejoin game group after reconnection:", error);
+            }
+        });
+        
+        conn.onreconnecting((error) => {
+            console.log("SignalR reconnecting...", error);
+        });
+        
+        conn.onclose((error) => {
+            console.log("SignalR connection closed", error);
+            setIsActiveGame(false);
+        });
+        
         await conn.start();
+        console.log("SignalR connection started");
+        
         await conn.invoke("JoinGameGroup", id);
+        console.log("Joined game group");
+        
         connectionRef.current = conn;
         setGameId(id);
         setIsActiveGame(true);
