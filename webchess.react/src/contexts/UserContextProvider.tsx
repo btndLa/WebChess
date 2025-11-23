@@ -55,6 +55,7 @@ export function UserContextProvider({ children }: { children: ReactNode }) {
         await logout();
         localStorage.removeItem('user');
         setUser(null);
+        navigate('/', { replace: true });
     }, [loggedIn]);
 
     useEffect(() => {
