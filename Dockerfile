@@ -1,4 +1,4 @@
-﻿FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+﻿﻿FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
 COPY *.sln ./
@@ -13,13 +13,12 @@ COPY WebChess.WebApi/ WebChess.WebApi/
 COPY WebChess.DataAccess/ WebChess.DataAccess/
 COPY WebChess.Shared/ WebChess.Shared/
 
-RUN dotnet publish WebChess.WebAPI/WebChess.WebAPI.csproj -c Release -o out
+RUN dotnet publish WebChess.WebApi/WebChess.WebApi.csproj -c Release -o out
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/out .
 
-# Expose the port your app runs on
 EXPOSE 7280
 
 ENTRYPOINT ["dotnet", "WebChess.WebApi.dll"]
