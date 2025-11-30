@@ -32,7 +32,7 @@ namespace WebChess.WebApi.Controllers {
 
 				foreach (var error in errors) {
 					if (error.Contains("Username", StringComparison.OrdinalIgnoreCase)) {
-						modelState.AddModelError("UserName", error);
+						modelState.AddModelError("userName", error);
 					}
 					else if (error.Contains("Email", StringComparison.OrdinalIgnoreCase)) {
 						modelState.AddModelError("Email", error);
