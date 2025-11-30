@@ -40,6 +40,7 @@ export function LoginPage() {
                     required
                 />
                 <TextField
+                    autoComplete="off"
                     label="Password"
                     type="password"
                     value={password}
