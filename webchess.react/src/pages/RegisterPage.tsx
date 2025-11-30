@@ -81,6 +81,7 @@ export function RegisterPage() {
                 />
                 <FormError message={formErrors.email} />
                 <TextField
+                    autoComplete="off"
                     label="Password"
                     type="password"
                     value={password}
