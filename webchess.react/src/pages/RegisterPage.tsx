@@ -69,7 +69,7 @@ export function RegisterPage() {
                     margin="normal"
                     required
                 />
-                <FormError message={formErrors.username} />
+                <FormError message={formErrors.username ? formErrors.username : formErrors.userName} />
                 <TextField
                     label="Email"
                     type="email"
