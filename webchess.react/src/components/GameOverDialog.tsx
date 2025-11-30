@@ -88,7 +88,6 @@ export function GameOverDialog(props: GameOverDialogProps) {
 
             <DialogContent sx={{ pt: 3, pb: 2 }}>
                 <Box sx={{ textAlign: 'center' }}>
-                    {/* Colored Badge */}
                     <Box
                         sx={{
                             display: 'inline-flex',
@@ -121,7 +120,6 @@ export function GameOverDialog(props: GameOverDialogProps) {
                         {resultData.message}
                     </Typography>
 
-                    {/* Decorative Element */}
                     <Paper
                         elevation={0}
                         sx={{
