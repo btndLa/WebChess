@@ -18,11 +18,35 @@ namespace WebChess.WebApi.Controllers {
 		}
 		[HttpPost]
 		[ProducesResponseType(statusCode: StatusCodes.Status201Created, type: typeof(UserResponseDto))]
+		[ProducesResponseType(statusCode: StatusCodes.Status400BadRequest)]
 		public async Task<IActionResult> CreateUser([FromBody] UserRequestDto userRequestDto) {
-			var user = _mapper.Map<User>(userRequestDto);
-			await _userService.AddUserAsync(user, userRequestDto.Password);
-			var userResponse = _mapper.Map<UserResponseDto>(user);
-			return StatusCode(StatusCodes.Status201Created, userResponse);
+			try {
+				var user = _mapper.Map<User>(userRequestDto);
+				await _userService.AddUserAsync(user, userRequestDto.Password);
+				var userResponse = _mapper.Map<UserResponseDto>(user);
+				return StatusCode(StatusCodes.Status201Created, userResponse);
+			}
+			catch (InvalidDataException ex) {
+				var errors = ex.Message.Split(", ");
+				var modelState = new Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary();
+
+				foreach (var error in errors) {
+					if (error.Contains("Username", StringComparison.OrdinalIgnoreCase)) {
+						modelState.AddModelError("UserName", error);
+					}
+					else if (error.Contains("Email", StringComparison.OrdinalIgnoreCase)) {
+						modelState.AddModelError("Email", error);
+					}
+					else if (error.Contains("Password", StringComparison.OrdinalIgnoreCase)) {
+						modelState.AddModelError("Password", error);
+					}
+					else {
+						modelState.AddModelError("", error);
+					}
+				}
+
+				return ValidationProblem(modelState);
+			}
 
 		}
 
